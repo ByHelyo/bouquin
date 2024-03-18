@@ -13,11 +13,13 @@
   "homepage": "http://github.com/ByHelyo/bouquin#readme",
   "scripts": {
     "check": "prettier --check .",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "prepare": "husky"
   },
   "private": true,
   "license": "MIT",
   "devDependencies": {
+    "husky": "^9.0.11",
     "prettier": "^3.2.5"
   }
 }
