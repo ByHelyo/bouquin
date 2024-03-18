@@ -8,11 +8,11 @@ const index = document.createElement("div");
 const body = document.querySelector("body");
 
 if (body) {
-    body.prepend(index);
+  body.prepend(index);
 }
 
 ReactDOM.createRoot(index).render(
-    <React.StrictMode>
-        <App />
-    </React.StrictMode>
-)
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+);
