@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import browser from "webextension-polyfill";
 
 type Theme = "dark" | "light" | "system";
 
@@ -26,9 +27,14 @@ export function ThemeProvider({
   storageKey = "vite-ui-theme",
   ...props
 }: ThemeProviderProps) {
-  const [theme, setTheme] = useState<Theme>(
-    () => (localStorage.getItem(storageKey) as Theme) || defaultTheme,
-  );
+  const [theme, setTheme] = useState<Theme>("dark");
+
+  useEffect(() => {
+    browser.storage.local
+      .get(storageKey)
+      .then((data) => data[storageKey] || defaultTheme)
+      .then(setTheme);
+  }, [storageKey, defaultTheme]);
 
   useEffect(() => {
     const root = window.document.documentElement;
@@ -50,8 +56,8 @@ export function ThemeProvider({
 
   const value = {
     theme,
-    setTheme: (theme: Theme) => {
-      localStorage.setItem(storageKey, theme);
+    setTheme: async (theme: Theme) => {
+      await browser.storage.local.set({ [storageKey]: theme });
       setTheme(theme);
     },
   };
