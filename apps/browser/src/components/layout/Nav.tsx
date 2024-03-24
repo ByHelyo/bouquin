@@ -14,7 +14,7 @@ interface Props {
 
 function Nav({ links }: Props) {
   return (
-    <nav className="p-2 flex flex-col gap-1">
+    <div className="flex flex-col gap-1">
       {links.map((link, index) => (
         <Link
           to={link.to}
@@ -30,7 +30,7 @@ function Nav({ links }: Props) {
           {link.title}
         </Link>
       ))}
-    </nav>
+    </div>
   );
 }
 

@@ -9,5 +9,8 @@
   },
   "icons": {
     "128": "vite.svg"
-  }
+  },
+  "web_accessible_resources": [
+    { "resources": ["./public/*.svg"], "matches": [] }
+  ]
 }
