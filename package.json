@@ -1,10 +1,12 @@
 {
-  "name": "wxt-react-starter",
-  "description": "manifest.json description",
-  "private": true,
+  "name": "bouquin",
+  "description": "Meet a new way to organize your bookmarks.",
+  "private": false,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "format": "prettier --write .",
+    "check": "prettier --check .",
     "dev": "wxt",
     "dev:firefox": "wxt -b firefox",
     "build": "wxt build",
@@ -15,13 +17,24 @@
     "postinstall": "wxt prepare"
   },
   "dependencies": {
+    "@radix-ui/react-icons": "^1.3.0",
+    "@radix-ui/react-slot": "^1.1.0",
+    "@tanstack/react-table": "^8.20.5",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.1",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "tailwind-merge": "^2.5.3",
+    "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
     "@types/react": "^18.3.11",
     "@types/react-dom": "^18.3.0",
     "@wxt-dev/module-react": "^1.1.1",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.47",
+    "prettier": "^3.3.3",
+    "tailwindcss": "^3.4.13",
     "typescript": "^5.6.2",
     "wxt": "^0.19.11"
   }
