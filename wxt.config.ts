@@ -6,5 +6,11 @@ export default defineConfig({
   manifest: {
     action: {},
     permissions: ["bookmarks"],
+    web_accessible_resources: [
+      {
+        resources: ["bouquin.html"],
+        matches: ["*://*/*"],
+      },
+    ],
   },
 });
