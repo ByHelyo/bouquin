@@ -1,3 +1,5 @@
-export default defineBackground(async () => {
-  console.log("Hello background!", { id: browser.runtime.id });
+export default defineBackground(() => {
+  browser.action.onClicked.addListener(() => {
+    browser.tabs.create({ url: "./bouquin.html" });
+  });
 });
