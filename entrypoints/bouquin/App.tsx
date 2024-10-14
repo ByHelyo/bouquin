@@ -1,20 +1,18 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css";
-import { Bookmarks, browser } from "wxt/browser";
+import { browser } from "wxt/browser";
+import { TBookmark } from "@/types/bookmark";
 
-function App() {
-  const [bookmarks, setBookmarks] = useState<Bookmarks.BookmarkTreeNode[]>([]);
+const App: React.FC = () => {
+  const [bookmarks, setBookmarks] = useState<TBookmark[]>([]);
 
   useEffect(() => {
-    async function fetchBookmarks() {
-      const tree = await browser.bookmarks.getTree();
-      setBookmarks(tree);
-    }
-
-    fetchBookmarks();
+    browser.bookmarks.getTree().then((tree) => {
+      console.log(tree);
+    });
   }, []);
 
-  return <main className="w-full h-full bg-red-500">Hello world!</main>;
-}
+  return <main className="w-full h-full">Hello world!</main>;
+};
 
 export default App;
