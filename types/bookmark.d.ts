@@ -8,5 +8,5 @@ export type TBookmark = {
   lastModified: number | null;
   unmodifiable: boolean;
   type: "bookmark" | "folder" | "separator" | null;
-  children: TBookmark[];
+  children: TBookmark[] | null;
 };

@@ -7,7 +7,7 @@ export default defineConfig({
   modules: ["@wxt-dev/module-react"],
   manifest: () => {
     const version = JSON.parse(
-        fs.readFileSync(path.resolve(__dirname, 'package.json')).toString(),
+      fs.readFileSync(path.resolve(__dirname, "package.json")).toString(),
     ).version;
 
     const conf: UserManifest = {
