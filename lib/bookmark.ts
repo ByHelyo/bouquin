@@ -1,5 +1,5 @@
-import { Bookmarks } from "wxt/browser";
 import { TBookmark } from "@/types/bookmark";
+import { Bookmarks } from "wxt/browser";
 
 export const dfsBookmark = (root: Bookmarks.BookmarkTreeNode): TBookmark => {
   let node = convertToTBookmark(root);

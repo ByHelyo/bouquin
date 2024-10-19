@@ -1,7 +1,7 @@
+import BookmarkItem from "./BookmarkItem";
+import { useBookmarks } from "@/components/provider/BookmarkProvider.tsx";
 import { TBookmark } from "@/types/bookmark";
 import React from "react";
-import BookmarkItem from "./BookmarkItem";
-import {useBookmarks} from "@/components/provider/BookmarkProvider.tsx";
 
 const headers: { name: string; width: number; align: "left" | "right" }[] = [
   {
@@ -31,22 +31,21 @@ const headers: { name: string; width: number; align: "left" | "right" }[] = [
   },
 ];
 
-const BookmarkExplorer: React.FC = ({
-}) => {
-  const {currentDirectory, checkedBookmarks, handleOnSelect } = useBookmarks();
+const BookmarkExplorer: React.FC = ({}) => {
+  const { currentDirectory, checkedBookmarks, handleOnSelect } = useBookmarks();
 
   if (!currentDirectory || currentDirectory.children === null) return null;
 
   return (
     <div className="flex-1 p-4">
-      <table className="table-fixed w-full">
+      <table className="w-full table-fixed">
         <thead className="mb-2">
           <tr>
             {headers.map((header) => (
               <th
                 key={header.name}
                 scope="col"
-                className="p-2 select-none"
+                className="select-none p-2"
                 style={{ width: `${header.width}%`, textAlign: header.align }}
               >
                 {header.name}

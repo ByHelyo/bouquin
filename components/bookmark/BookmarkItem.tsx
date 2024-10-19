@@ -1,7 +1,7 @@
-import { TBookmark } from "@/types/bookmark";
-import React from "react";
-import { File, Folder } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { TBookmark } from "@/types/bookmark";
+import { File, Folder } from "lucide-react";
+import React from "react";
 
 type TBookmarkItemProps = {
   bookmark: TBookmark;
@@ -32,34 +32,34 @@ const BookmarkItem: React.FC<TBookmarkItemProps> = ({
       )}
       onClick={handleOnClick}
     >
-      <td className="px-2 py-1 flex items-center text-left">
+      <td className="flex items-center px-2 py-1 text-left">
         {bookmark.type === "folder" ? (
           <Folder
-            className="w-[24px] mr-3 shrink-0"
+            className="mr-3 w-[24px] shrink-0"
             fill="yellow"
             strokeWidth={0}
           />
         ) : (
           <File
-            className="w-[24px] mr-3 shrink-0"
+            className="mr-3 w-[24px] shrink-0"
             fill="gray"
             strokeWidth={0}
           />
         )}
-        <span className="font-medium text-gray-800 text-left truncate">
+        <span className="truncate text-left font-medium text-gray-800">
           {bookmark.title}
         </span>
       </td>
-      <td className="px-2 py-1 text-gray-500 text-left truncate">
+      <td className="truncate px-2 py-1 text-left text-gray-500">
         {bookmark.url}
       </td>
-      <td className="px-2 py-1 text-gray-500 text-left">
+      <td className="px-2 py-1 text-left text-gray-500">
         {bookmark.lastModified !== null
           ? formatDateTime(bookmark.lastModified)
           : null}
       </td>
-      <td className="px-2 py-1 text-gray-500 text-left">{bookmark.type}</td>
-      <td className="px-2 py-1 text-gray-500 text-right">
+      <td className="px-2 py-1 text-left text-gray-500">{bookmark.type}</td>
+      <td className="px-2 py-1 text-right text-gray-500">
         {bookmark.children === null ? null : bookmark.children.length}
       </td>
     </tr>

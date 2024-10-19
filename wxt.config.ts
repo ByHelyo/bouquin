@@ -1,6 +1,6 @@
-import { defineConfig, UserManifest } from "wxt";
-import * as path from "path";
 import fs from "fs";
+import * as path from "path";
+import { defineConfig, UserManifest } from "wxt";
 
 // See https://wxt.dev/api/config.html
 export default defineConfig({

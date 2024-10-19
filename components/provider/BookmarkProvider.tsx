@@ -1,7 +1,7 @@
+import { dfsBookmark } from "@/lib/bookmark";
+import { TBookmark } from "@/types/bookmark";
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { browser } from "wxt/browser";
-import { TBookmark } from "@/types/bookmark";
-import { dfsBookmark } from "@/lib/bookmark";
 
 const BookmarkContext = createContext<{
   rootBookmark: TBookmark | null;

@@ -1,5 +1,5 @@
-import { browser } from "wxt/browser";
 import { IS_FIREFOX } from "@/lib/environment.ts";
+import { browser } from "wxt/browser";
 
 export default defineBackground(() => {
   const action = IS_FIREFOX ? browser.browserAction : browser.action;
