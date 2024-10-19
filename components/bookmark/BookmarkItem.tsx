@@ -27,8 +27,8 @@ const BookmarkItem: React.FC<TBookmarkItemProps> = ({
   return (
     <tr
       className={cn(
-        "select-none hover:bg-gray-100",
-        isSelected && "bg-gray-200",
+        "select-none hover:bg-blue-100",
+        isSelected && "bg-blue-200 hover:bg-blue-200",
       )}
       onClick={handleOnClick}
     >
