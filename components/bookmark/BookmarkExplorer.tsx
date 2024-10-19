@@ -1,10 +1,7 @@
 import { TBookmark } from "@/types/bookmark";
-import React, { useState } from "react";
+import React from "react";
 import BookmarkItem from "./BookmarkItem";
-
-type TBookmarkExplorerProps = {
-  initialBookmark: TBookmark | null;
-};
+import {useBookmarks} from "@/components/provider/BookmarkProvider.tsx";
 
 const headers: { name: string; width: number; align: "left" | "right" }[] = [
   {
@@ -34,17 +31,14 @@ const headers: { name: string; width: number; align: "left" | "right" }[] = [
   },
 ];
 
-const BookmarkExplorer: React.FC<TBookmarkExplorerProps> = ({
-  initialBookmark,
+const BookmarkExplorer: React.FC = ({
 }) => {
-  const [bookmark, setBookmark] = useState(initialBookmark);
+  const {currentDirectory, checkedBookmarks, handleOnSelect } = useBookmarks();
 
-  useEffect(() => {
-    setBookmark(initialBookmark);
-  }, [initialBookmark]);
+  if (!currentDirectory || currentDirectory.children === null) return null;
 
   return (
-    <div className="flex-1 p-1">
+    <div className="flex-1 p-4">
       <table className="table-fixed w-full">
         <thead className="mb-2">
           <tr>
@@ -61,12 +55,12 @@ const BookmarkExplorer: React.FC<TBookmarkExplorerProps> = ({
           </tr>
         </thead>
         <tbody>
-          {bookmark?.children?.map((child) => (
+          {currentDirectory.children.map((child) => (
             <BookmarkItem
               key={child.id}
               bookmark={child}
-              selected={false}
-              setBookmark={setBookmark}
+              isSelected={checkedBookmarks.has(child.id)}
+              handleOnSelect={handleOnSelect}
             />
           ))}
         </tbody>

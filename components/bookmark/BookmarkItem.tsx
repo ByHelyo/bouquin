@@ -5,14 +5,14 @@ import { cn } from "@/lib/utils";
 
 type TBookmarkItemProps = {
   bookmark: TBookmark;
-  selected: boolean;
-  setBookmark: (bookmark: TBookmark) => void;
+  isSelected: boolean;
+  handleOnSelect: (selectedBookmarks: string[]) => void;
 };
 
 const BookmarkItem: React.FC<TBookmarkItemProps> = ({
   bookmark,
-  selected,
-  setBookmark,
+  isSelected,
+  handleOnSelect,
 }) => {
   const formatDateTime = (timestamp: number | null) => {
     if (timestamp === null) return null;
@@ -20,16 +20,17 @@ const BookmarkItem: React.FC<TBookmarkItemProps> = ({
     return date.toISOString().slice(0, 16).replace("T", " ");
   };
 
-  const goTo = () => {
-    if (bookmark.type === "folder") {
-      setBookmark(bookmark);
-    }
+  const handleOnClick = () => {
+    handleOnSelect([bookmark.id]);
   };
 
   return (
     <tr
-      className={cn("select-none hover:bg-gray-100", selected && "bg-gray-200")}
-      onClick={goTo}
+      className={cn(
+        "select-none hover:bg-gray-100",
+        isSelected && "bg-gray-200",
+      )}
+      onClick={handleOnClick}
     >
       <td className="px-2 py-1 flex items-center text-left">
         {bookmark.type === "folder" ? (
@@ -59,7 +60,7 @@ const BookmarkItem: React.FC<TBookmarkItemProps> = ({
       </td>
       <td className="px-2 py-1 text-gray-500 text-left">{bookmark.type}</td>
       <td className="px-2 py-1 text-gray-500 text-right">
-        {bookmark.children?.length || 0}
+        {bookmark.children === null ? null : bookmark.children.length}
       </td>
     </tr>
   );
