@@ -8,6 +8,7 @@ const BookmarkContext = createContext<{
   currentDirectory: TBookmark | null;
   checkedBookmarks: Set<string>;
   handleOnSelect: (value: string[]) => void;
+  path: TBookmark[];
 } | null>(null);
 
 export const BookmarkProvider: React.FC<{ children: React.ReactNode }> = ({
@@ -20,6 +21,7 @@ export const BookmarkProvider: React.FC<{ children: React.ReactNode }> = ({
   const [checkedBookmarks, setCheckedBookmarks] = useState<Set<string>>(
     new Set(),
   );
+  const path = useRef<TBookmark[]>([]);
 
   useEffect(() => {
     browser.bookmarks.getTree().then((tree) => {
@@ -43,8 +45,10 @@ export const BookmarkProvider: React.FC<{ children: React.ReactNode }> = ({
 
       if (!selectedBookmark) return;
 
-      if (selectedBookmark.type === "folder")
+      if (selectedBookmark.type === "folder") {
+        path.current.push(selectedBookmark);
         setCurrentDirectory(selectedBookmark);
+      }
       return;
     }
 
@@ -58,6 +62,7 @@ export const BookmarkProvider: React.FC<{ children: React.ReactNode }> = ({
         currentDirectory,
         checkedBookmarks,
         handleOnSelect,
+        path: path.current,
       }}
     >
       {children}
