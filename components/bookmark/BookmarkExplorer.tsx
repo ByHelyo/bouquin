@@ -1,9 +1,9 @@
 import { TBookmark } from "@/types/bookmark";
-import React from "react";
+import React, { useState } from "react";
 import BookmarkItem from "./BookmarkItem";
 
 type TBookmarkExplorerProps = {
-  bookmarks: TBookmark | null;
+  initialBookmark: TBookmark | null;
 };
 
 const headers: { name: string; width: number; align: "left" | "right" }[] = [
@@ -32,13 +32,20 @@ const headers: { name: string; width: number; align: "left" | "right" }[] = [
     width: 10,
     align: "right",
   },
-
 ];
 
-const BookmarkExplorer: React.FC<TBookmarkExplorerProps> = ({ bookmarks }) => {
+const BookmarkExplorer: React.FC<TBookmarkExplorerProps> = ({
+  initialBookmark,
+}) => {
+  const [bookmark, setBookmark] = useState(initialBookmark);
+
+  useEffect(() => {
+    setBookmark(initialBookmark);
+  }, [initialBookmark]);
+
   return (
     <div className="flex-1 p-1">
-      <table className="w-full">
+      <table className="table-fixed w-full">
         <thead className="mb-2">
           <tr>
             {headers.map((header) => (
@@ -54,8 +61,13 @@ const BookmarkExplorer: React.FC<TBookmarkExplorerProps> = ({ bookmarks }) => {
           </tr>
         </thead>
         <tbody>
-          {bookmarks?.children?.map((child) => (
-            <BookmarkItem key={child.id} bookmark={child} selected={false} />
+          {bookmark?.children?.map((child) => (
+            <BookmarkItem
+              key={child.id}
+              bookmark={child}
+              selected={false}
+              setBookmark={setBookmark}
+            />
           ))}
         </tbody>
       </table>
