@@ -6,11 +6,11 @@ import {
   BreadcrumbSeparator,
 } from "../ui/breadcrumb";
 import { Button } from "@/components/ui/button.tsx";
-import { ArrowLeft, ArrowRight, Layers, Layers3 } from "lucide-react";
+import { ArrowLeft, ArrowRight, ArrowUp, Layers3 } from "lucide-react";
 import React from "react";
 
 const BookmarkToolbar: React.FC = () => {
-  const { currentDirectory, path } = useBookmarks();
+  const { currentDirectory, path, goToParent, goToRoot } = useBookmarks();
 
   if (!currentDirectory) return null;
 
@@ -22,16 +22,18 @@ const BookmarkToolbar: React.FC = () => {
       <Button size="icon" variant="icon">
         <ArrowRight size={20} />
       </Button>
+      <Button size="icon" variant="icon" onClick={goToParent}>
+        <ArrowUp size={20} />
+      </Button>
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
-            <Button variant="icon" size="icon">
+            <Button variant="icon" size="icon" onClick={goToRoot}>
               <Layers3 size={20} />
             </Button>
           </BreadcrumbItem>
           {path.map((item) => (
             <>
-              <BreadcrumbSeparator />
               <BreadcrumbItem key={item.id}>
                 <span className="cursor-pointer hover:underline">
                   {item?.title}

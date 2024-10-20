@@ -16,6 +16,8 @@ const BookmarkContext = createContext<{
   handleOnSelect: (value: string[]) => void;
   path: TBookmark[];
   size: number;
+  goToParent: () => void;
+  goToRoot: () => void;
 } | null>(null);
 
 export const BookmarkProvider: React.FC<{ children: React.ReactNode }> = ({
@@ -37,13 +39,14 @@ export const BookmarkProvider: React.FC<{ children: React.ReactNode }> = ({
         const { root, size } = visitBookmarkTreeNode(tree[0]);
         setRootBookmark(root);
         setCurrentDirectory(root);
-        pathRef.current = [root];
         sizeRef.current = size;
       }
     });
   }, []);
 
   const handleOnSelect = (value: string[]) => {
+    if (!currentDirectory) return;
+
     if (
       checkedBookmarks.size === 1 &&
       value.length === 1 &&
@@ -54,7 +57,7 @@ export const BookmarkProvider: React.FC<{ children: React.ReactNode }> = ({
       );
 
       if (selectedBookmark?.type === "folder") {
-        pathRef.current = [...pathRef.current, selectedBookmark];
+        pathRef.current = [...pathRef.current, currentDirectory];
         setCurrentDirectory(selectedBookmark);
         setCheckedBookmarks(new Set());
         return;
@@ -62,6 +65,22 @@ export const BookmarkProvider: React.FC<{ children: React.ReactNode }> = ({
     }
 
     setCheckedBookmarks(new Set(value));
+  };
+
+  const goToRoot = () => {
+    setCurrentDirectory(rootBookmark);
+    pathRef.current = [];
+    setCheckedBookmarks(new Set());
+  };
+
+  const goToParent = () => {
+    const parent = pathRef.current.pop();
+    if (parent) {
+      setCurrentDirectory(parent);
+    } else {
+      setCurrentDirectory(rootBookmark);
+    }
+    setCheckedBookmarks(new Set());
   };
 
   return (
@@ -73,6 +92,8 @@ export const BookmarkProvider: React.FC<{ children: React.ReactNode }> = ({
         handleOnSelect,
         path: pathRef.current,
         size: sizeRef.current,
+        goToParent,
+        goToRoot,
       }}
     >
       {children}
