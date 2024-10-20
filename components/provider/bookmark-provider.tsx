@@ -39,25 +39,27 @@ export const BookmarkProvider: React.FC<{ children: React.ReactNode }> = ({
         const { root, size } = visitBookmarkTreeNode(tree[0]);
         setRootBookmark(root);
         setCurrentDirectory(root);
+        pathRef.current = [root];
         sizeRef.current = size;
       }
     });
   }, []);
 
   const handleOnSelect = (value: string[]) => {
-    if (!currentDirectory) return;
+    // when handleOnSelect() is triggered, rootBookmark and currentDirectory are unreachable.
+    if (rootBookmark === null || currentDirectory === null) return;
 
     if (
       checkedBookmarks.size === 1 &&
       value.length === 1 &&
       checkedBookmarks.has(value[0])
     ) {
-      const selectedBookmark = currentDirectory?.children?.find(
+      const selectedBookmark = currentDirectory.children.find(
         (c) => c.id === value[0],
       );
 
       if (selectedBookmark?.type === "folder") {
-        pathRef.current = [...pathRef.current, currentDirectory];
+        pathRef.current = [...pathRef.current, selectedBookmark];
         setCurrentDirectory(selectedBookmark);
         setCheckedBookmarks(new Set());
         return;
@@ -68,18 +70,24 @@ export const BookmarkProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const goToRoot = () => {
+    // when goToRoot() is triggered, rootBookmark is unreachable.
+    if (rootBookmark === null) return;
+
     setCurrentDirectory(rootBookmark);
-    pathRef.current = [];
+    pathRef.current = [rootBookmark];
     setCheckedBookmarks(new Set());
   };
 
   const goToParent = () => {
-    const parent = pathRef.current.pop();
-    if (parent) {
-      setCurrentDirectory(parent);
-    } else {
-      setCurrentDirectory(rootBookmark);
-    }
+    // If the path is empty, unreachable.
+    if (pathRef.current.length === 0) return;
+
+    // If the current path is already the root, do nothing.
+    if (pathRef.current.length === 1) return;
+
+    pathRef.current.pop();
+
+    setCurrentDirectory(pathRef.current[pathRef.current.length - 1]);
     setCheckedBookmarks(new Set());
   };
 

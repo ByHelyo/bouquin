@@ -27,20 +27,27 @@ const BookmarkToolbar: React.FC = () => {
       </Button>
       <Breadcrumb>
         <BreadcrumbList>
-          <BreadcrumbItem>
-            <Button variant="icon" size="icon" onClick={goToRoot}>
-              <Layers3 size={20} />
-            </Button>
-          </BreadcrumbItem>
-          {path.map((item) => (
-            <>
-              <BreadcrumbItem key={item.id}>
-                <span className="cursor-pointer hover:underline">
-                  {item?.title}
-                </span>
-              </BreadcrumbItem>
-            </>
-          ))}
+          {path.map((item, index) => {
+            if (index === 0)
+              return (
+                <BreadcrumbItem>
+                  <Button variant="icon" size="icon" onClick={goToRoot}>
+                    <Layers3 size={20} />
+                  </Button>
+                </BreadcrumbItem>
+              );
+
+            return (
+              <>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem key={item.id}>
+                  <span className="cursor-pointer hover:underline">
+                    {item?.title}
+                  </span>
+                </BreadcrumbItem>
+              </>
+            );
+          })}
         </BreadcrumbList>
       </Breadcrumb>
     </div>

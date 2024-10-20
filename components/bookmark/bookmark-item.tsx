@@ -59,7 +59,7 @@ const BookmarkItem: React.FC<TBookmarkItemProps> = ({
           : null}
       </td>
       <td className="px-2 py-1 text-right text-muted-foreground">
-        {bookmark.children === null ? null : bookmark.children.length}
+        {bookmark.type === "folder" ? bookmark.children.length : null}
       </td>
     </tr>
   );

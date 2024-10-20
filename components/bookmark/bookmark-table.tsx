@@ -28,7 +28,7 @@ const headers: { name: string; width: number; align: "left" | "right" }[] = [
 const BookmarkTable: React.FC = () => {
   const { currentDirectory, checkedBookmarks, handleOnSelect } = useBookmarks();
 
-  if (!currentDirectory || currentDirectory.children === null) return null;
+  if (!currentDirectory) return null;
 
   return (
     <table className="w-full table-fixed">

@@ -7,8 +7,6 @@ export const visitBookmarkTreeNode = (
   let node = convertToTBookmark(root);
   let size = 0;
   if (root.children !== undefined) {
-    node.children = [];
-
     for (const child of root.children) {
       const { root, size: subSize } = visitBookmarkTreeNode(child);
       node.children.push(root);
@@ -31,6 +29,6 @@ function convertToTBookmark(node: Bookmarks.BookmarkTreeNode): TBookmark {
     unmodifiable: !!node.unmodifiable,
     type:
       node.type === "folder" || node.url === undefined ? "folder" : "bookmark",
-    children: null,
+    children: [],
   };
 }
