@@ -58,9 +58,6 @@ const BookmarkItem: React.FC<TBookmarkItemProps> = ({
           ? formatDateTime(bookmark.lastModified)
           : null}
       </td>
-      <td className="px-2 py-1 text-left text-muted-foreground">
-        {bookmark.type}
-      </td>
       <td className="px-2 py-1 text-right text-muted-foreground">
         {bookmark.children === null ? null : bookmark.children.length}
       </td>

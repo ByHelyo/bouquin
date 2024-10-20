@@ -1,18 +1,22 @@
 import { TBookmark } from "@/types/bookmark";
 import { Bookmarks } from "wxt/browser";
 
-export const dfsBookmark = (root: Bookmarks.BookmarkTreeNode): TBookmark => {
+export const dfsBookmark = (
+  root: Bookmarks.BookmarkTreeNode,
+): { root: TBookmark; size: number } => {
   let node = convertToTBookmark(root);
-
+  let size = 0;
   if (root.children !== undefined) {
     node.children = [];
 
     for (const child of root.children) {
-      node.children.push(dfsBookmark(child));
+      const { root, size: subSize } = dfsBookmark(child);
+      node.children.push(root);
+      size += subSize + 1;
     }
   }
 
-  return node;
+  return { root: node, size };
 };
 
 function convertToTBookmark(node: Bookmarks.BookmarkTreeNode): TBookmark {
@@ -26,7 +30,7 @@ function convertToTBookmark(node: Bookmarks.BookmarkTreeNode): TBookmark {
     lastModified: node.dateAdded || null,
     unmodifiable: !!node.unmodifiable,
     type:
-      node.type === "folder" || node.url !== undefined ? "bookmark" : "folder",
+      node.type !== "folder" || node.url !== undefined ? "bookmark" : "folder",
     children: null,
   };
 }

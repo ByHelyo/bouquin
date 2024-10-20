@@ -5,7 +5,7 @@ import React, { FC } from "react";
 const headers: { name: string; width: number; align: "left" | "right" }[] = [
   {
     name: "Title",
-    width: 20,
+    width: 35,
     align: "left",
   },
   {
@@ -15,12 +15,7 @@ const headers: { name: string; width: number; align: "left" | "right" }[] = [
   },
   {
     name: "Date modified",
-    width: 20,
-    align: "left",
-  },
-  {
-    name: "Type",
-    width: 10,
+    width: 15,
     align: "left",
   },
   {
