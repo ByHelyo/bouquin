@@ -1,4 +1,4 @@
-import { dfsBookmark } from "@/lib/bookmark";
+import { visitBookmarkTreeNode } from "@/lib/bookmark/treenode.ts";
 import { TBookmark } from "@/types/bookmark";
 import React, {
   createContext,
@@ -34,7 +34,7 @@ export const BookmarkProvider: React.FC<{ children: React.ReactNode }> = ({
   useEffect(() => {
     browser.bookmarks.getTree().then((tree) => {
       if (tree.length == 1) {
-        const { root, size } = dfsBookmark(tree[0]);
+        const { root, size } = visitBookmarkTreeNode(tree[0]);
         setRootBookmark(root);
         setCurrentDirectory(root);
         pathRef.current = [root];

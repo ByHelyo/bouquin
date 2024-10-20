@@ -1,4 +1,4 @@
-import { useBookmarks } from "../provider/BookmarkProvider";
+import { useBookmarks } from "../provider/bookmark-provider.tsx";
 import {
   Breadcrumb,
   BreadcrumbItem,

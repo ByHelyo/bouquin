@@ -1,5 +1,5 @@
-import { useBookmarks } from "../provider/BookmarkProvider";
-import BookmarkItem from "./BookmarkItem";
+import { useBookmarks } from "../provider/bookmark-provider.tsx";
+import BookmarkItem from "./bookmark-item.tsx";
 import React, { FC } from "react";
 
 const headers: { name: string; width: number; align: "left" | "right" }[] = [

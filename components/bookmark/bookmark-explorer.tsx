@@ -1,6 +1,6 @@
-import BookmarkTable from "./BookmarkTable";
-import BookmarkToolbar from "./BookmarkToolbar";
-import { useBookmarks } from "@/components/provider/BookmarkProvider.tsx";
+import BookmarkTable from "./bookmark-table.tsx";
+import BookmarkToolbar from "./bookmark-toolbar.tsx";
+import { useBookmarks } from "@/components/provider/bookmark-provider.tsx";
 import React from "react";
 
 const BookmarkExplorer: React.FC = () => {
