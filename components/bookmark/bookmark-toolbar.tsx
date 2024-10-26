@@ -10,20 +10,40 @@ import { ArrowLeft, ArrowRight, ArrowUp, Layers3 } from "lucide-react";
 import React from "react";
 
 const BookmarkToolbar: React.FC = () => {
-  const { currentDirectory, path, goToParent, goToRoot } = useBookmarks();
+  const {
+    currentDirectory,
+    path,
+    goToParent,
+    goToRoot,
+    goForward,
+    isForwardEmpty,
+    isParentEmpty,
+  } = useBookmarks();
 
   if (!currentDirectory) return null;
 
+  console.log(isParentEmpty());
+
   return (
     <div className="mb-4 flex items-center gap-x-4">
-      <Button size="icon" variant="icon">
+      <Button
+        size="icon-sm"
+        variant="icon"
+        onClick={goToParent}
+        disabled={isParentEmpty()}
+      >
         <ArrowLeft size={20} />
       </Button>
-      <Button size="icon" variant="icon">
-        <ArrowRight size={20} />
+      <Button
+        size="icon-sm"
+        variant="icon"
+        onClick={goForward}
+        disabled={isForwardEmpty()}
+      >
+        <ArrowRight />
       </Button>
-      <Button size="icon" variant="icon" onClick={goToParent}>
-        <ArrowUp size={20} />
+      <Button size="icon-sm" variant="icon" onClick={goToParent}>
+        <ArrowUp />
       </Button>
       <Breadcrumb>
         <BreadcrumbList>
@@ -31,8 +51,8 @@ const BookmarkToolbar: React.FC = () => {
             if (index === 0)
               return (
                 <BreadcrumbItem>
-                  <Button variant="icon" size="icon" onClick={goToRoot}>
-                    <Layers3 size={20} />
+                  <Button size="icon-sm" variant="icon" onClick={goToRoot}>
+                    <Layers3 />
                   </Button>
                 </BreadcrumbItem>
               );

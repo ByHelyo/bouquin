@@ -27,21 +27,21 @@ const BookmarkItem: React.FC<TBookmarkItemProps> = ({
   return (
     <tr
       className={cn(
-        "select-none text-xs hover:bg-blue-100",
-        isSelected && "bg-blue-200 hover:bg-blue-200",
+        "select-none text-xs ring-1 ring-transparent hover:bg-blue-100",
+        isSelected && "bg-blue-200 ring-blue-300 hover:bg-blue-200",
       )}
       onClick={handleOnClick}
     >
-      <td className="flex items-center px-2 py-1 text-left">
+      <td className="flex items-center px-1 py-0.5 text-left">
         {bookmark.type === "folder" ? (
           <Folder
-            className="mr-2 w-[20px] shrink-0"
+            className="mr-2 w-[16px] shrink-0"
             fill="yellow"
             strokeWidth={0}
           />
         ) : (
           <File
-            className="mr-2 w-[20px] shrink-0"
+            className="mr-2 w-[16px] shrink-0"
             fill="gray"
             strokeWidth={0}
           />

@@ -32,13 +32,13 @@ const BookmarkTable: React.FC = () => {
 
   return (
     <table className="w-full table-fixed">
-      <thead className="mb-2">
+      <thead>
         <tr>
-          {headers.map((header) => (
+          {headers.map((header, index) => (
             <th
               key={header.name}
               scope="col"
-              className="select-none p-2"
+              className={`select-none p-2 ${index < headers.length - 1 ? "border-r border-gray-300" : ""}`}
               style={{ width: `${header.width}%`, textAlign: header.align }}
             >
               {header.name}

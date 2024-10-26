@@ -13,11 +13,16 @@ const BookmarkContext = createContext<{
   rootBookmark: TBookmark | null;
   currentDirectory: TBookmark | null;
   checkedBookmarks: Set<string>;
-  handleOnSelect: (value: string[]) => void;
   path: TBookmark[];
   size: number;
-  goToParent: () => void;
+  bookmarksCount: number;
+  folderCount: number;
+  handleOnSelect: (value: string[]) => void;
   goToRoot: () => void;
+  goToParent: () => void;
+  goForward: () => void;
+  isForwardEmpty: () => boolean;
+  isParentEmpty: () => boolean;
 } | null>(null);
 
 export const BookmarkProvider: React.FC<{ children: React.ReactNode }> = ({
@@ -31,12 +36,16 @@ export const BookmarkProvider: React.FC<{ children: React.ReactNode }> = ({
     new Set(),
   );
   const pathRef = useRef<TBookmark[]>([]);
+  const forwardPathRef = useRef<TBookmark[]>([]);
   const sizeRef = useRef<number>(0);
+  const bookmarksCountRef = useRef<number>(0);
+  const folderCountRef = useRef<number>(0);
 
   useEffect(() => {
     browser.bookmarks.getTree().then((tree) => {
       if (tree.length == 1) {
-        const { root, size } = visitBookmarkTreeNode(tree[0]);
+        const { root, size, bookmarks_count, folder_count } =
+          visitBookmarkTreeNode(tree[0]);
         setRootBookmark(root);
         setCurrentDirectory(root);
         pathRef.current = [root];
@@ -44,6 +53,15 @@ export const BookmarkProvider: React.FC<{ children: React.ReactNode }> = ({
       }
     });
   }, []);
+
+  const isForwardEmpty = (): boolean => {
+    return forwardPathRef.current.length === 0;
+  };
+
+  const isParentEmpty = (): boolean => {
+    // If the current path is already the root, do nothing.
+    return pathRef.current.length <= 1;
+  };
 
   const handleOnSelect = (value: string[]) => {
     // when handleOnSelect() is triggered, rootBookmark and currentDirectory are unreachable.
@@ -79,16 +97,20 @@ export const BookmarkProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const goToParent = () => {
-    // If the path is empty, unreachable.
-    if (pathRef.current.length === 0) return;
-
-    // If the current path is already the root, do nothing.
-    if (pathRef.current.length === 1) return;
+    if (isParentEmpty()) return;
 
     pathRef.current.pop();
 
+    forwardPathRef.current.push(pathRef.current[pathRef.current.length - 1]);
     setCurrentDirectory(pathRef.current[pathRef.current.length - 1]);
     setCheckedBookmarks(new Set());
+  };
+
+  const goForward = () => {
+    if (isForwardEmpty()) return;
+
+    pathRef.current.push(forwardPathRef.current.pop()!);
+    setCurrentDirectory(pathRef.current[pathRef.current.length - 1]);
   };
 
   return (
@@ -100,8 +122,13 @@ export const BookmarkProvider: React.FC<{ children: React.ReactNode }> = ({
         handleOnSelect,
         path: pathRef.current,
         size: sizeRef.current,
+        bookmarksCount: bookmarksCountRef.current,
+        folderCount: folderCountRef.current,
         goToParent,
         goToRoot,
+        goForward,
+        isForwardEmpty,
+        isParentEmpty,
       }}
     >
       {children}
