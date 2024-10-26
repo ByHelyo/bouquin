@@ -22,8 +22,6 @@ const BookmarkToolbar: React.FC = () => {
 
   if (!currentDirectory) return null;
 
-  console.log(isParentEmpty());
-
   return (
     <div className="mb-4 flex items-center gap-x-4">
       <Button

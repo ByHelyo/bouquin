@@ -14,8 +14,8 @@ const BookmarkContext = createContext<{
   currentDirectory: TBookmark | null;
   checkedBookmarks: Set<string>;
   path: TBookmark[];
-  size: number;
-  bookmarksCount: number;
+  total: number;
+  bookmarkCount: number;
   folderCount: number;
   handleOnSelect: (value: string[]) => void;
   goToRoot: () => void;
@@ -37,19 +37,21 @@ export const BookmarkProvider: React.FC<{ children: React.ReactNode }> = ({
   );
   const pathRef = useRef<TBookmark[]>([]);
   const forwardPathRef = useRef<TBookmark[]>([]);
-  const sizeRef = useRef<number>(0);
-  const bookmarksCountRef = useRef<number>(0);
+  const totalRef = useRef<number>(0);
+  const bookmarkCountRef = useRef<number>(0);
   const folderCountRef = useRef<number>(0);
 
   useEffect(() => {
     browser.bookmarks.getTree().then((tree) => {
       if (tree.length == 1) {
-        const { root, size, bookmarks_count, folder_count } =
+        const { root, total, bookmarkCount, folderCount } =
           visitBookmarkTreeNode(tree[0]);
         setRootBookmark(root);
         setCurrentDirectory(root);
         pathRef.current = [root];
-        sizeRef.current = size;
+        totalRef.current = total;
+        bookmarkCountRef.current = bookmarkCount;
+        folderCountRef.current = folderCount;
       }
     });
   }, []);
@@ -121,8 +123,8 @@ export const BookmarkProvider: React.FC<{ children: React.ReactNode }> = ({
         checkedBookmarks,
         handleOnSelect,
         path: pathRef.current,
-        size: sizeRef.current,
-        bookmarksCount: bookmarksCountRef.current,
+        total: totalRef.current,
+        bookmarkCount: bookmarkCountRef.current,
         folderCount: folderCountRef.current,
         goToParent,
         goToRoot,

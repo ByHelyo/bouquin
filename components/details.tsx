@@ -1,7 +1,17 @@
+import { useBookmarks } from "./provider/bookmark-provider";
+import StatisticItem from "./statistic-item";
 import React from "react";
 
 const Details: React.FC = () => {
-  return <div className="w-[260px] border-l border-gray-200">Details</div>;
+  const { total, bookmarkCount, folderCount } = useBookmarks();
+
+  return (
+    <div className="flex w-[260px] select-none flex-col gap-y-4 border-l border-border p-4">
+      <StatisticItem label="Total" value={`${total}`} />
+      <StatisticItem label="Bookmarks" value={`${bookmarkCount}`} />
+      <StatisticItem label="Folders" value={`${folderCount}`} />
+    </div>
+  );
 };
 
 export default Details;

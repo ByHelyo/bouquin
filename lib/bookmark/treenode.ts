@@ -5,29 +5,42 @@ export const visitBookmarkTreeNode = (
   root: Bookmarks.BookmarkTreeNode,
 ): {
   root: TBookmark;
-  size: number;
-  bookmarks_count: number;
-  folder_count: number;
+  total: number;
+  bookmarkCount: number;
+  folderCount: number;
+  separatorCount: number;
 } => {
   let node = convertToTBookmark(root);
-  let size = 0;
-  let bookmarks_count = 0;
-  let folder_count = 0;
+  let total = 0;
+  let bookmarkCount = 0;
+  let folderCount = 0;
+  let separatorCount = 0;
 
   if (root.children !== undefined) {
     for (const child of root.children) {
-      const { root, size: subSize } = visitBookmarkTreeNode(child);
-      node.children.push(root);
-      if (root.type === "bookmark") {
-        bookmarks_count += 1;
-      } else {
-        folder_count += 1;
+      const {
+        root: subRoot,
+        total: subTotal,
+        bookmarkCount: subBookmarkCount,
+        folderCount: subFolderCount,
+        separatorCount: subSeparatorCount,
+      } = visitBookmarkTreeNode(child);
+      node.children.push(subRoot);
+      bookmarkCount += subBookmarkCount;
+      folderCount += subFolderCount;
+      separatorCount += subSeparatorCount;
+
+      if (subRoot.type === "bookmark") {
+        bookmarkCount += 1;
+      } else if (subRoot.type === "folder") {
+        folderCount += 1;
+      } else if (subRoot.type === "separator") {
+        separatorCount += 1;
       }
-      size += subSize + 1;
+      total += subTotal + 1;
     }
   }
-
-  return { root: node, size, bookmarks_count, folder_count };
+  return { root: node, total, bookmarkCount, folderCount, separatorCount };
 };
 
 function convertToTBookmark(node: Bookmarks.BookmarkTreeNode): TBookmark {
