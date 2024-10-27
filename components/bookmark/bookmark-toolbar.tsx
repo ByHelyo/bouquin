@@ -17,7 +17,10 @@ const BookmarkToolbar: React.FC = () => {
     goToRoot,
     goForward,
     isForwardEmpty,
-    isParentEmpty,
+    isParent,
+    goBackward,
+    isBackwardEmpty,
+    isRoot,
   } = useBookmarks();
 
   if (!currentDirectory) return null;
@@ -27,8 +30,8 @@ const BookmarkToolbar: React.FC = () => {
       <Button
         size="icon"
         variant="icon"
-        onClick={goToParent}
-        disabled={isParentEmpty()}
+        onClick={goBackward}
+        disabled={isBackwardEmpty()}
       >
         <ArrowLeft className="h-4 w-4" />
       </Button>
@@ -40,7 +43,12 @@ const BookmarkToolbar: React.FC = () => {
       >
         <ArrowRight className="h-4 w-4" />
       </Button>
-      <Button size="icon" variant="icon" onClick={goToParent}>
+      <Button
+        size="icon"
+        variant="icon"
+        onClick={goToParent}
+        disabled={isParent()}
+      >
         <ArrowUp className="h-4 w-4" />
       </Button>
       <Breadcrumb>
@@ -49,7 +57,12 @@ const BookmarkToolbar: React.FC = () => {
             if (index === 0)
               return (
                 <BreadcrumbItem>
-                  <Button size="icon" variant="icon" onClick={goToRoot}>
+                  <Button
+                    size="icon"
+                    variant="icon"
+                    onClick={goToRoot}
+                    disabled={isRoot()}
+                  >
                     <Layers3 className="h-4 w-4" />
                   </Button>
                 </BreadcrumbItem>

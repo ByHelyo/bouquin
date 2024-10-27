@@ -1,3 +1,4 @@
+import { findPathBookmarkNode } from "@/lib/bookmark/find";
 import { visitBookmarkTreeNode } from "@/lib/bookmark/treenode.ts";
 import { TBookmark } from "@/types/bookmark";
 import React, {
@@ -17,12 +18,15 @@ const BookmarkContext = createContext<{
   total: number;
   bookmarkCount: number;
   folderCount: number;
+  isRoot: () => boolean;
+  isParent: () => boolean;
+  isBackwardEmpty: () => boolean;
+  isForwardEmpty: () => boolean;
   handleOnSelect: (value: string[]) => void;
   goToRoot: () => void;
   goToParent: () => void;
   goForward: () => void;
-  isForwardEmpty: () => boolean;
-  isParentEmpty: () => boolean;
+  goBackward: () => void;
 } | null>(null);
 
 export const BookmarkProvider: React.FC<{ children: React.ReactNode }> = ({
@@ -36,7 +40,8 @@ export const BookmarkProvider: React.FC<{ children: React.ReactNode }> = ({
     new Set(),
   );
   const pathRef = useRef<TBookmark[]>([]);
-  const forwardPathRef = useRef<TBookmark[]>([]);
+  const backHistoryRef = useRef<TBookmark[]>([]);
+  const forwardHistoryRef = useRef<TBookmark[]>([]);
   const totalRef = useRef<number>(0);
   const bookmarkCountRef = useRef<number>(0);
   const folderCountRef = useRef<number>(0);
@@ -56,13 +61,23 @@ export const BookmarkProvider: React.FC<{ children: React.ReactNode }> = ({
     });
   }, []);
 
-  const isForwardEmpty = (): boolean => {
-    return forwardPathRef.current.length === 0;
+  const isRoot = (): boolean => {
+    if (!rootBookmark || !currentDirectory) return false;
+
+    return currentDirectory.id == rootBookmark.id;
   };
 
-  const isParentEmpty = (): boolean => {
+  const isParent = (): boolean => {
     // If the current path is already the root, do nothing.
     return pathRef.current.length <= 1;
+  };
+
+  const isForwardEmpty = (): boolean => {
+    return forwardHistoryRef.current.length === 0;
+  };
+
+  const isBackwardEmpty = (): boolean => {
+    return backHistoryRef.current.length === 0;
   };
 
   const handleOnSelect = (value: string[]) => {
@@ -74,45 +89,63 @@ export const BookmarkProvider: React.FC<{ children: React.ReactNode }> = ({
       value.length === 1 &&
       checkedBookmarks.has(value[0])
     ) {
-      const selectedBookmark = currentDirectory.children.find(
+      const selectedElement = currentDirectory.children.find(
         (c) => c.id === value[0],
       );
 
-      if (selectedBookmark?.type === "folder") {
-        pathRef.current = [...pathRef.current, selectedBookmark];
-        setCurrentDirectory(selectedBookmark);
-        setCheckedBookmarks(new Set());
-        return;
-      }
-    }
+      if (!selectedElement) return;
 
-    setCheckedBookmarks(new Set(value));
+      if (selectedElement?.type === "folder") {
+        pathRef.current = [...pathRef.current, selectedElement];
+        backHistoryRef.current.push(currentDirectory);
+        setCurrentDirectory(selectedElement);
+        setCheckedBookmarks(new Set());
+      }
+    } else {
+      setCheckedBookmarks(new Set(value));
+    }
   };
 
   const goToRoot = () => {
     // when goToRoot() is triggered, rootBookmark is unreachable.
-    if (rootBookmark === null) return;
+    if (rootBookmark === null || !currentDirectory) return;
 
-    setCurrentDirectory(rootBookmark);
+    backHistoryRef.current.push(currentDirectory);
+    forwardHistoryRef.current = [];
     pathRef.current = [rootBookmark];
+    setCurrentDirectory(rootBookmark);
     setCheckedBookmarks(new Set());
   };
 
   const goToParent = () => {
-    if (isParentEmpty()) return;
+    const element = pathRef.current.pop();
 
-    pathRef.current.pop();
+    if (!element || !currentDirectory) return;
 
-    forwardPathRef.current.push(pathRef.current[pathRef.current.length - 1]);
+    backHistoryRef.current.push(currentDirectory);
+    forwardHistoryRef.current = [];
     setCurrentDirectory(pathRef.current[pathRef.current.length - 1]);
     setCheckedBookmarks(new Set());
   };
 
-  const goForward = () => {
-    if (isForwardEmpty()) return;
+  const goBackward = () => {
+    const element = backHistoryRef.current.pop();
 
-    pathRef.current.push(forwardPathRef.current.pop()!);
-    setCurrentDirectory(pathRef.current[pathRef.current.length - 1]);
+    if (!element || !rootBookmark || !currentDirectory) return;
+
+    forwardHistoryRef.current.push(currentDirectory);
+    pathRef.current = findPathBookmarkNode(rootBookmark, element.id)!;
+    setCurrentDirectory(element);
+  };
+
+  const goForward = () => {
+    const element = forwardHistoryRef.current.pop();
+
+    if (!element || !rootBookmark || !currentDirectory) return;
+
+    backHistoryRef.current.push(currentDirectory);
+    pathRef.current = findPathBookmarkNode(rootBookmark, element.id)!;
+    setCurrentDirectory(element);
   };
 
   return (
@@ -128,9 +161,12 @@ export const BookmarkProvider: React.FC<{ children: React.ReactNode }> = ({
         folderCount: folderCountRef.current,
         goToParent,
         goToRoot,
-        goForward,
+        isRoot,
         isForwardEmpty,
-        isParentEmpty,
+        isParent,
+        goForward,
+        goBackward,
+        isBackwardEmpty,
       }}
     >
       {children}
