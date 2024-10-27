@@ -25,23 +25,23 @@ const BookmarkToolbar: React.FC = () => {
   return (
     <div className="mb-4 flex items-center gap-x-4">
       <Button
-        size="icon-sm"
+        size="icon"
         variant="icon"
         onClick={goToParent}
         disabled={isParentEmpty()}
       >
-        <ArrowLeft size={20} />
+        <ArrowLeft className="h-4 w-4" />
       </Button>
       <Button
-        size="icon-sm"
+        size="icon"
         variant="icon"
         onClick={goForward}
         disabled={isForwardEmpty()}
       >
-        <ArrowRight />
+        <ArrowRight className="h-4 w-4" />
       </Button>
-      <Button size="icon-sm" variant="icon" onClick={goToParent}>
-        <ArrowUp />
+      <Button size="icon" variant="icon" onClick={goToParent}>
+        <ArrowUp className="h-4 w-4" />
       </Button>
       <Breadcrumb>
         <BreadcrumbList>
@@ -49,8 +49,8 @@ const BookmarkToolbar: React.FC = () => {
             if (index === 0)
               return (
                 <BreadcrumbItem>
-                  <Button size="icon-sm" variant="icon" onClick={goToRoot}>
-                    <Layers3 />
+                  <Button size="icon" variant="icon" onClick={goToRoot}>
+                    <Layers3 className="h-4 w-4" />
                   </Button>
                 </BreadcrumbItem>
               );
@@ -59,9 +59,9 @@ const BookmarkToolbar: React.FC = () => {
               <>
                 <BreadcrumbSeparator />
                 <BreadcrumbItem key={item.id}>
-                  <span className="cursor-pointer hover:underline">
+                  <Button variant="ghost" size="sm">
                     {item?.title}
-                  </span>
+                  </Button>
                 </BreadcrumbItem>
               </>
             );
