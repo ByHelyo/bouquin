@@ -26,7 +26,7 @@ const BookmarkToolbar: React.FC = () => {
     <div className="mb-4 flex items-center gap-x-4">
       <Button
         size="icon"
-        variant="icon"
+        variant="ghost"
         onClick={goBackward}
         disabled={isBackwardEmpty()}
       >
@@ -34,7 +34,7 @@ const BookmarkToolbar: React.FC = () => {
       </Button>
       <Button
         size="icon"
-        variant="icon"
+        variant="ghost"
         onClick={goForward}
         disabled={isForwardEmpty()}
       >
@@ -42,7 +42,7 @@ const BookmarkToolbar: React.FC = () => {
       </Button>
       <Button
         size="icon"
-        variant="icon"
+        variant="ghost"
         onClick={goToParent}
         disabled={isRoot()}
       >
@@ -56,7 +56,7 @@ const BookmarkToolbar: React.FC = () => {
                 <BreadcrumbItem>
                   <Button
                     size="icon"
-                    variant="icon"
+                    variant="ghost"
                     onClick={goToRoot}
                     disabled={isRoot()}
                   >
