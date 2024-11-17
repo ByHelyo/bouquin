@@ -48,7 +48,10 @@ const BookmarkTable: React.FC = () => {
       </thead>
       <tbody>
         {bookmarks[currentDirectoryId].childrenIds.map((childId) => (
-          <BookmarkItem key={childId} id={childId} />
+          <BookmarkItem
+            key={childId}
+            id={childId}
+          />
         ))}
       </tbody>
     </table>
