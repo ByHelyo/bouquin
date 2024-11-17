@@ -11,19 +11,16 @@ import React from "react";
 
 const BookmarkToolbar: React.FC = () => {
   const {
-    currentDirectory,
+    bookmarks,
     path,
     goToParent,
     goToRoot,
     goForward,
     isForwardEmpty,
-    isParent,
     goBackward,
     isBackwardEmpty,
     isRoot,
   } = useBookmarks();
-
-  if (!currentDirectory) return null;
 
   return (
     <div className="mb-4 flex items-center gap-x-4">
@@ -47,13 +44,13 @@ const BookmarkToolbar: React.FC = () => {
         size="icon"
         variant="icon"
         onClick={goToParent}
-        disabled={isParent()}
+        disabled={isRoot()}
       >
         <ArrowUp className="h-4 w-4" />
       </Button>
       <Breadcrumb>
         <BreadcrumbList>
-          {path.map((item, index) => {
+          {path.map((id, index) => {
             if (index === 0)
               return (
                 <BreadcrumbItem>
@@ -71,9 +68,9 @@ const BookmarkToolbar: React.FC = () => {
             return (
               <>
                 <BreadcrumbSeparator />
-                <BreadcrumbItem key={item.id}>
+                <BreadcrumbItem key={id}>
                   <Button variant="ghost" size="sm">
-                    {item?.title}
+                    {bookmarks[id].title}
                   </Button>
                 </BreadcrumbItem>
               </>

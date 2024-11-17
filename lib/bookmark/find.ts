@@ -1,22 +1,23 @@
 import { TBookmark } from "@/types/bookmark";
 
 export const findPathBookmarkNode = (
-  root: TBookmark,
-  id: string,
-): TBookmark[] | null => {
-  if (root === null) {
+  bookmarks: TBookmark[],
+  currentId: number,
+  target: number,
+): number[] | null => {
+  if (currentId >= bookmarks.length) {
     return null;
   }
 
-  if (root.id === id) {
-    return [root];
+  if (target == currentId) {
+    return [currentId];
   }
 
-  for (const child of root.children) {
-    const result = findPathBookmarkNode(child, id);
+  for (const child of bookmarks[currentId].childrenIds) {
+    const result = findPathBookmarkNode(bookmarks, child, target);
 
     if (result !== null) {
-      return [root, ...result];
+      return [currentId, ...result];
     }
   }
 

@@ -1,5 +1,6 @@
 export type TBookmark = {
-  id: string;
+  id: number;
+  nodeId: string;
   parentId: string | null;
   index: number | null;
   url: string | null;
@@ -8,5 +9,5 @@ export type TBookmark = {
   lastModified: number | null;
   unmodifiable: boolean;
   type: "bookmark" | "folder" | "separator" | null;
-  children: TBookmark[];
+  childrenIds: number[];
 };

@@ -1,6 +1,6 @@
 import { useBookmarks } from "../provider/bookmark-provider.tsx";
 import BookmarkItem from "./bookmark-item.tsx";
-import React, { FC } from "react";
+import React from "react";
 
 const headers: { name: string; width: number; align: "left" | "right" }[] = [
   {
@@ -26,9 +26,9 @@ const headers: { name: string; width: number; align: "left" | "right" }[] = [
 ];
 
 const BookmarkTable: React.FC = () => {
-  const { currentDirectory, checkedBookmarks, handleOnSelect } = useBookmarks();
+  const { bookmarks, currentDirectoryId } = useBookmarks();
 
-  if (!currentDirectory) return null;
+  if (bookmarks.length === 0) return null;
 
   return (
     <table className="w-full table-fixed">
@@ -47,13 +47,8 @@ const BookmarkTable: React.FC = () => {
         </tr>
       </thead>
       <tbody>
-        {currentDirectory.children.map((child) => (
-          <BookmarkItem
-            key={child.id}
-            bookmark={child}
-            isSelected={checkedBookmarks.has(child.id)}
-            handleOnSelect={handleOnSelect}
-          />
+        {bookmarks[currentDirectoryId].childrenIds.map((childId) => (
+          <BookmarkItem key={childId} id={childId} />
         ))}
       </tbody>
     </table>

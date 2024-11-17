@@ -1,51 +1,61 @@
 import { TBookmark } from "@/types/bookmark";
 import { Bookmarks } from "wxt/browser";
 
-export const visitBookmarkTreeNode = (
+export const buildBookmarkTree = (
   root: Bookmarks.BookmarkTreeNode,
-): {
-  root: TBookmark;
-  total: number;
-  bookmarkCount: number;
-  folderCount: number;
-  separatorCount: number;
-} => {
-  let node = convertToTBookmark(root);
+  bookmarks: TBookmark[],
+  id: number[],
+) => {
+  let node = convertToTBookmark(root, id[0]);
+  ++id[0];
+
+  bookmarks.push(node);
+
   let total = 0;
   let bookmarkCount = 0;
   let folderCount = 0;
   let separatorCount = 0;
 
-  if (root.children !== undefined) {
+  if (root.children != undefined) {
     for (const child of root.children) {
-      const {
-        root: subRoot,
-        total: subTotal,
-        bookmarkCount: subBookmarkCount,
-        folderCount: subFolderCount,
-        separatorCount: subSeparatorCount,
-      } = visitBookmarkTreeNode(child);
-      node.children.push(subRoot);
-      bookmarkCount += subBookmarkCount;
-      folderCount += subFolderCount;
-      separatorCount += subSeparatorCount;
+      const childResult = buildBookmarkTree(child, bookmarks, id);
+      node.childrenIds.push(childResult.id);
 
-      if (subRoot.type === "bookmark") {
-        bookmarkCount += 1;
-      } else if (subRoot.type === "folder") {
-        folderCount += 1;
-      } else if (subRoot.type === "separator") {
-        separatorCount += 1;
+      bookmarkCount += childResult.bookmarkCount;
+      folderCount += childResult.folderCount;
+      separatorCount += childResult.separatorCount;
+      total += childResult.total + 1;
+
+      switch (bookmarks[childResult.id].type) {
+        case "folder":
+          folderCount += 1;
+          break;
+        case "bookmark":
+          bookmarkCount += 1;
+          break;
+        case "separator":
+          separatorCount += 1;
+          break;
       }
-      total += subTotal + 1;
     }
   }
-  return { root: node, total, bookmarkCount, folderCount, separatorCount };
-};
 
-function convertToTBookmark(node: Bookmarks.BookmarkTreeNode): TBookmark {
   return {
     id: node.id,
+    total,
+    bookmarkCount,
+    folderCount,
+    separatorCount,
+  };
+};
+
+function convertToTBookmark(
+  node: Bookmarks.BookmarkTreeNode,
+  id: number,
+): TBookmark {
+  return {
+    id: id,
+    nodeId: node.id,
     parentId: node.parentId || null,
     index: node.index || null,
     url: node.url || null,
@@ -55,6 +65,6 @@ function convertToTBookmark(node: Bookmarks.BookmarkTreeNode): TBookmark {
     unmodifiable: !!node.unmodifiable,
     type:
       node.type === "folder" || node.url === undefined ? "folder" : "bookmark",
-    children: [],
+    childrenIds: [],
   };
 }

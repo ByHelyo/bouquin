@@ -1,19 +1,18 @@
+import { useBookmarks } from "@/components/provider/bookmark-provider.tsx";
 import { cn } from "@/lib/utils";
-import { TBookmark } from "@/types/bookmark";
 import { File, Folder } from "lucide-react";
 import React from "react";
 
 type TBookmarkItemProps = {
-  bookmark: TBookmark;
-  isSelected: boolean;
-  handleOnSelect: (selectedBookmarks: string[]) => void;
+  id: number;
 };
 
-const BookmarkItem: React.FC<TBookmarkItemProps> = ({
-  bookmark,
-  isSelected,
-  handleOnSelect,
-}) => {
+const BookmarkItem: React.FC<TBookmarkItemProps> = ({ id }) => {
+  const { bookmarks, checkedBookmarks, handleOnSelect } = useBookmarks();
+
+  const bookmark = bookmarks[id];
+  const isSelected = checkedBookmarks.has(id);
+
   const formatDateTime = (timestamp: number | null) => {
     if (timestamp === null) return null;
     const date = new Date(timestamp);
@@ -21,7 +20,7 @@ const BookmarkItem: React.FC<TBookmarkItemProps> = ({
   };
 
   const handleOnClick = () => {
-    handleOnSelect([bookmark.id]);
+    handleOnSelect([id]);
   };
 
   return (
@@ -59,7 +58,7 @@ const BookmarkItem: React.FC<TBookmarkItemProps> = ({
           : null}
       </td>
       <td className="px-2 py-1 text-right text-muted-foreground">
-        {bookmark.type === "folder" ? bookmark.children.length : null}
+        {bookmark.type === "folder" ? bookmark.childrenIds.length : null}
       </td>
     </tr>
   );
