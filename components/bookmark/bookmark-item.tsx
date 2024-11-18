@@ -39,8 +39,8 @@ const BookmarkItem: React.FC<TBookmarkItemProps> = ({ id }) => {
       <ContextMenuTrigger asChild>
         <tr
           className={cn(
-            "select-none text-xs ring-1 ring-transparent hover:bg-blue-100",
-            isSelected && "bg-blue-200 ring-blue-300 hover:bg-blue-200",
+            "select-none hover:bg-accent",
+            isSelected && "bg-accent",
           )}
           onClick={handleOnClick}
         >
