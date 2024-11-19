@@ -28,7 +28,7 @@ const BookmarkContext = createContext<{
   goBackward: () => void;
 } | null>(null);
 
-export const BookmarkProvider: React.FC<{ children: React.ReactNode }> = ({
+export const ChromeBookmarkProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [bookmarks, setBookmarks] = useState<TBookmark[]>([]);
@@ -158,7 +158,7 @@ export const BookmarkProvider: React.FC<{ children: React.ReactNode }> = ({
   );
 };
 
-export const useBookmarks = () => {
+export const useChromeBookmark = () => {
   const context = useContext(BookmarkContext);
   if (!context) {
     throw new Error("useBookmarks must be used within a BookmarkProvider");

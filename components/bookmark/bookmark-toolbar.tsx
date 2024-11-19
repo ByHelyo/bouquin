@@ -1,4 +1,4 @@
-import { useBookmarks } from "../provider/bookmark-provider.tsx";
+import { useChromeBookmark } from "../provider/chrome-bookmark-provider.tsx";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -20,7 +20,7 @@ const BookmarkToolbar: React.FC = () => {
     goBackward,
     isBackwardEmpty,
     isRoot,
-  } = useBookmarks();
+  } = useChromeBookmark();
 
   return (
     <div className="mb-4 flex items-center gap-x-4">

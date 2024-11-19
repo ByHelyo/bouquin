@@ -1,4 +1,4 @@
-import { useBookmarks } from "../provider/bookmark-provider.tsx";
+import { useChromeBookmark } from "../provider/chrome-bookmark-provider.tsx";
 import BookmarkItem from "./bookmark-item.tsx";
 import React from "react";
 
@@ -26,7 +26,7 @@ const headers: { name: string; width: number; align: "left" | "right" }[] = [
 ];
 
 const BookmarkTable: React.FC = () => {
-  const { bookmarks, currentDirectoryId } = useBookmarks();
+  const { bookmarks, currentDirectoryId } = useChromeBookmark();
 
   if (bookmarks.length === 0) return null;
 
@@ -48,10 +48,7 @@ const BookmarkTable: React.FC = () => {
       </thead>
       <tbody>
         {bookmarks[currentDirectoryId].childrenIds.map((childId) => (
-          <BookmarkItem
-            key={childId}
-            id={childId}
-          />
+          <BookmarkItem key={childId} id={childId} />
         ))}
       </tbody>
     </table>

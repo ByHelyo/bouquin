@@ -1,9 +1,9 @@
-import { useBookmarks } from "./provider/bookmark-provider";
+import { useChromeBookmark } from "./provider/chrome-bookmark-provider.tsx";
 import StatisticItem from "./statistic-item";
 import React from "react";
 
 const Details: React.FC = () => {
-  const { total, bookmarkCount, folderCount } = useBookmarks();
+  const { total, bookmarkCount, folderCount } = useChromeBookmark();
 
   return (
     <div className="hidden w-[260px] select-none flex-col gap-y-4 border-l border-border p-2 2xl:flex">

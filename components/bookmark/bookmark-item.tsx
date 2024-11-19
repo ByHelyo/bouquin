@@ -1,4 +1,4 @@
-import { useBookmarks } from "@/components/provider/bookmark-provider.tsx";
+import { useChromeBookmark } from "@/components/provider/chrome-bookmark-provider.tsx";
 import {
   ContextMenu,
   ContextMenuContent,
@@ -15,7 +15,7 @@ type TBookmarkItemProps = {
 };
 
 const BookmarkItem: React.FC<TBookmarkItemProps> = ({ id }) => {
-  const { bookmarks, checkedBookmarks, handleOnSelect } = useBookmarks();
+  const { bookmarks, checkedBookmarks, handleOnSelect } = useChromeBookmark();
 
   const bookmark = bookmarks[id];
   const isSelected = checkedBookmarks.has(id);
