@@ -1,16 +1,10 @@
 import { findPathBookmarkNode } from "@/lib/bookmark/find";
 import { buildBookmarkTree } from "@/lib/bookmark/treenode.ts";
 import { TBookmark } from "@/types/bookmark";
-import React, {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  useRef,
-} from "react";
+import React, { createContext, useState, useEffect, useRef } from "react";
 import { browser } from "wxt/browser";
 
-const BookmarkContext = createContext<{
+export const ChromeBookmarkContext = createContext<{
   bookmarks: TBookmark[];
   currentDirectoryId: number;
   checkedBookmarks: Set<number>;
@@ -28,7 +22,11 @@ const BookmarkContext = createContext<{
   goBackward: () => void;
 } | null>(null);
 
-export const ChromeBookmarkProvider: React.FC<{ children: React.ReactNode }> = ({
+type ChromeBookmarkProviderProps = {
+  children: React.ReactNode;
+};
+
+export const ChromeBookmarkProvider: React.FC<ChromeBookmarkProviderProps> = ({
   children,
 }) => {
   const [bookmarks, setBookmarks] = useState<TBookmark[]>([]);
@@ -134,7 +132,7 @@ export const ChromeBookmarkProvider: React.FC<{ children: React.ReactNode }> = (
   };
 
   return (
-    <BookmarkContext.Provider
+    <ChromeBookmarkContext.Provider
       value={{
         bookmarks,
         checkedBookmarks,
@@ -154,14 +152,6 @@ export const ChromeBookmarkProvider: React.FC<{ children: React.ReactNode }> = (
       }}
     >
       {children}
-    </BookmarkContext.Provider>
+    </ChromeBookmarkContext.Provider>
   );
-};
-
-export const useChromeBookmark = () => {
-  const context = useContext(BookmarkContext);
-  if (!context) {
-    throw new Error("useBookmarks must be used within a BookmarkProvider");
-  }
-  return context;
 };

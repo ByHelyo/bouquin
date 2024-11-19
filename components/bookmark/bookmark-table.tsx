@@ -1,5 +1,5 @@
-import { useChromeBookmark } from "../provider/chrome-bookmark-provider.tsx";
 import BookmarkItem from "./bookmark-item.tsx";
+import useChromeBookmark from "@/components/hook/use-chrome-bookmark.tsx";
 import React from "react";
 
 const headers: { name: string; width: number; align: "left" | "right" }[] = [

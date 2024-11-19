@@ -1,4 +1,4 @@
-import { useChromeBookmark } from "@/components/provider/chrome-bookmark-provider.tsx";
+import useChromeBookmark from "@/components/hook/use-chrome-bookmark.tsx";
 import {
   ContextMenu,
   ContextMenuContent,

@@ -1,10 +1,10 @@
-import { useChromeBookmark } from "../provider/chrome-bookmark-provider.tsx";
 import {
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbList,
   BreadcrumbSeparator,
 } from "../ui/breadcrumb";
+import useChromeBookmark from "@/components/hook/use-chrome-bookmark.tsx";
 import { Button } from "@/components/ui/button.tsx";
 import { ArrowLeft, ArrowRight, ArrowUp, Layers3 } from "lucide-react";
 import React from "react";

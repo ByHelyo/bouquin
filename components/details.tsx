@@ -1,5 +1,5 @@
-import { useChromeBookmark } from "./provider/chrome-bookmark-provider.tsx";
 import StatisticItem from "./statistic-item";
+import useChromeBookmark from "@/components/hook/use-chrome-bookmark.tsx";
 import React from "react";
 
 const Details: React.FC = () => {
