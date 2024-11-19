@@ -14,16 +14,18 @@ type TBookmarkExplorerProviderProps = {
 export const BookmarkCreateContext: React.FC<
   TBookmarkExplorerProviderProps
 > = ({ children }) => {
-  const { setIsOpen } = useBookmarkDialogProvider();
+  const { openCreationDialog } = useBookmarkDialogProvider();
 
   return (
     <ContextMenu>
       <ContextMenuTrigger asChild>{children}</ContextMenuTrigger>
       <ContextMenuContent className="w-64">
-        <ContextMenuItem inset onClick={() => setIsOpen(true)}>
+        <ContextMenuItem inset onClick={() => openCreationDialog("bookmark")}>
           New bookmark
         </ContextMenuItem>
-        <ContextMenuItem inset>New folder</ContextMenuItem>
+        <ContextMenuItem inset onClick={() => openCreationDialog("folder")}>
+          New folder
+        </ContextMenuItem>
       </ContextMenuContent>
     </ContextMenu>
   );

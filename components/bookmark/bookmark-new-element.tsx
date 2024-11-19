@@ -3,10 +3,10 @@ import { Button } from "@/components/ui/button.tsx";
 import React from "react";
 
 const BookmarkNew: React.FC = () => {
-  const { setIsOpen } = useBookmarkDialogProvider();
+  const { openCreationDialog } = useBookmarkDialogProvider();
 
   const onClick = () => {
-    setIsOpen(true);
+    openCreationDialog("bookmark");
   };
 
   return (

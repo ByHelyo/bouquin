@@ -1,5 +1,5 @@
 import Logo from "./logo";
-import BookmarkNew from "@/components/bookmark/bookmark-new.tsx";
+import BookmarkNew from "@/components/bookmark/bookmark-new-element";
 import React from "react";
 
 const Navigation: React.FC = () => {
