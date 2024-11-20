@@ -1,17 +1,16 @@
-import React from "react";
+import React, { forwardRef } from "react";
 import { Input } from "~/components/ui/input";
+import { cn } from "~/lib/utils";
 
 type InputWithOverlappingLabelProps = {
   label: string;
-  placeholder?: string;
-  type?: string;
+  className?: string;
 };
 
-const InputWithOverlappingLabel: React.FC<InputWithOverlappingLabelProps> = ({
-  label,
-  placeholder,
-  type,
-}) => {
+const InputWithOverlappingLabel = forwardRef<
+  HTMLInputElement,
+  React.ComponentProps<"input"> & InputWithOverlappingLabelProps
+>(({ label, className, ...props }, ref) => {
   return (
     <div className="group relative">
       <label
@@ -21,13 +20,13 @@ const InputWithOverlappingLabel: React.FC<InputWithOverlappingLabelProps> = ({
         {label}
       </label>
       <Input
+        ref={ref}
         id="input-31"
-        className="h-10"
-        placeholder={placeholder}
-        type={type}
+        className={cn("h-10", className)}
+        {...props}
       />
     </div>
   );
-};
+});
 
 export default InputWithOverlappingLabel;

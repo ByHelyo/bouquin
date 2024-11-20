@@ -49,10 +49,10 @@ export const buildBookmarkTree = (
   };
 };
 
-function convertToTBookmark(
+export const convertToTBookmark = (
   node: Bookmarks.BookmarkTreeNode,
   id: number,
-): TBookmark {
+): TBookmark => {
   return {
     id: id,
     nodeId: node.id,
@@ -67,4 +67,4 @@ function convertToTBookmark(
       node.type === "folder" || node.url === undefined ? "folder" : "bookmark",
     childrenIds: [],
   };
-}
+};

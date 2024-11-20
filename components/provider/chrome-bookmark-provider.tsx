@@ -1,8 +1,15 @@
 import { findPathBookmarkNode } from "@/lib/bookmark/find";
 import { buildBookmarkTree } from "@/lib/bookmark/treenode.ts";
+import { chromeCreateBookmark } from "@/lib/chrome-bookmark";
 import { TBookmark } from "@/types/bookmark";
 import React, { createContext, useState, useEffect, useRef } from "react";
 import { browser } from "wxt/browser";
+
+export type TCreateBookmarkDetails = {
+  name: string;
+  url: string | null;
+  type: "bookmark" | "folder";
+};
 
 export const ChromeBookmarkContext = createContext<{
   bookmarks: TBookmark[];
@@ -20,6 +27,7 @@ export const ChromeBookmarkContext = createContext<{
   goToParent: () => void;
   goForward: () => void;
   goBackward: () => void;
+  createBookmark: (details: TCreateBookmarkDetails) => Promise<void>;
 } | null>(null);
 
 type ChromeBookmarkProviderProps = {
@@ -131,6 +139,15 @@ export const ChromeBookmarkProvider: React.FC<ChromeBookmarkProviderProps> = ({
     setCheckedBookmarks(new Set());
   };
 
+  const createBookmark = async (details: TCreateBookmarkDetails) => {
+    chromeCreateBookmark(
+      bookmarks[currentDirectoryId].nodeId,
+      details.name,
+      details.url || undefined,
+      details.type,
+    ).then(() => {});
+  };
+
   return (
     <ChromeBookmarkContext.Provider
       value={{
@@ -149,6 +166,7 @@ export const ChromeBookmarkProvider: React.FC<ChromeBookmarkProviderProps> = ({
         goForward,
         goBackward,
         isBackwardEmpty,
+        createBookmark,
       }}
     >
       {children}
