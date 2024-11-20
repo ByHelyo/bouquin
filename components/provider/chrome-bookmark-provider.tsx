@@ -1,5 +1,8 @@
 import { findPathBookmarkNode } from "@/lib/bookmark/find";
-import { buildBookmarkTree } from "@/lib/bookmark/treenode.ts";
+import {
+  buildBookmarkTree,
+  convertToTBookmark,
+} from "@/lib/bookmark/treenode.ts";
 import { chromeCreateBookmark } from "@/lib/chrome-bookmark";
 import { TBookmark } from "@/types/bookmark";
 import React, { createContext, useState, useEffect, useRef } from "react";
@@ -145,7 +148,23 @@ export const ChromeBookmarkProvider: React.FC<ChromeBookmarkProviderProps> = ({
       details.name,
       details.url || undefined,
       details.type,
-    ).then(() => {});
+    ).then((bookmarkTreeNode) => {
+      const newBookmark = convertToTBookmark(
+        bookmarkTreeNode,
+        bookmarks.length,
+      );
+      const newBookmarksList = bookmarks.map((b) => {
+        if (b.nodeId === newBookmark.parentId) {
+          return {
+            ...b,
+            childrenIds: [...b.childrenIds, newBookmark.id],
+          };
+        }
+        return b;
+      });
+      console.log(newBookmarksList);
+      setBookmarks([...newBookmarksList, newBookmark]);
+    });
   };
 
   return (
