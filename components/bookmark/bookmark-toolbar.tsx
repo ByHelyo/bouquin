@@ -59,6 +59,7 @@ const BookmarkToolbar: React.FC = () => {
                     variant="ghost"
                     onClick={goToRoot}
                     disabled={isRoot()}
+                    key={id}
                   >
                     <Layers3 className="h-4 w-4" />
                   </Button>

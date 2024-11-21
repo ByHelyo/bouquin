@@ -10,6 +10,7 @@ import {
 } from "../ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { createContext } from "react";
+import { toast } from "sonner";
 
 export const BookmarkDialogContext = createContext<TBookmarkDialogContext>({
   isOpen: false,
@@ -40,9 +41,16 @@ export const BookmarkDialogProvider: React.FC<TBookmarkDialogProviderProps> = ({
   };
 
   const handleSave = () => {
-    createBookmark({ name, url, type: tab }).then(() => {
-      setIsOpen(false);
-    });
+    createBookmark({ name, url, type: tab })
+      .then(() => {
+        setUrl("");
+        setName("");
+        setIsOpen(false);
+        toast.success("Bookmark created");
+      })
+      .catch((error) => {
+        toast.error(error);
+      });
   };
 
   return (

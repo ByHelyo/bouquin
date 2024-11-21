@@ -4,6 +4,7 @@ import Details from "@/components/details.tsx";
 import Navigation from "@/components/navigation.tsx";
 import { BookmarkDialogProvider } from "@/components/provider/bookmark-dialog-provider";
 import { ChromeBookmarkProvider } from "@/components/provider/chrome-bookmark-provider.tsx";
+import { Toaster } from "@/components/ui/sonner";
 import React from "react";
 
 const App: React.FC = () => {
@@ -16,6 +17,7 @@ const App: React.FC = () => {
           <Details />
         </BookmarkDialogProvider>
       </ChromeBookmarkProvider>
+      <Toaster />
     </main>
   );
 };

@@ -94,11 +94,16 @@ export const ChromeBookmarkProvider: React.FC<ChromeBookmarkProviderProps> = ({
     ) {
       const selectedElement = bookmarks[selectedIds[0]];
 
-      if (selectedElement.type === "folder") {
-        pathRef.current = [...pathRef.current, selectedElement.id];
-        backHistoryRef.current.push(currentDirectoryId);
-        forwardHistoryRef.current = [];
-        setCheckedBookmarks(new Set());
+      switch (selectedElement.type) {
+        case "folder":
+          pathRef.current = [...pathRef.current, selectedElement.id];
+          backHistoryRef.current.push(currentDirectoryId);
+          forwardHistoryRef.current = [];
+          setCheckedBookmarks(new Set());
+          break;
+        case "bookmark":
+          browser.tabs.create({ url: selectedElement.url || undefined });
+          break;
       }
     } else {
       setCheckedBookmarks(new Set(selectedIds));
@@ -142,12 +147,16 @@ export const ChromeBookmarkProvider: React.FC<ChromeBookmarkProviderProps> = ({
     setCheckedBookmarks(new Set());
   };
 
-  const createBookmark = async (details: TCreateBookmarkDetails) => {
+  const createBookmark = async (
+    details: TCreateBookmarkDetails,
+  ): Promise<void> => {
+    if (currentDirectoryId === 0)
+      return Promise.reject("Can't modify the root bookmark folders");
+
     chromeCreateBookmark(
       bookmarks[currentDirectoryId].nodeId,
       details.name,
       details.url || undefined,
-      details.type,
     ).then((bookmarkTreeNode) => {
       const newBookmark = convertToTBookmark(
         bookmarkTreeNode,
@@ -162,7 +171,6 @@ export const ChromeBookmarkProvider: React.FC<ChromeBookmarkProviderProps> = ({
         }
         return b;
       });
-      console.log(newBookmarksList);
       setBookmarks([...newBookmarksList, newBookmark]);
     });
   };
