@@ -1,3 +1,4 @@
+import useBookmarkDialogProvider from "../hook/use-bookmark-dialog";
 import useChromeBookmark from "@/components/hook/use-chrome-bookmark.tsx";
 import {
   ContextMenu,
@@ -16,6 +17,7 @@ type TBookmarkItemProps = {
 
 const BookmarkItem: React.FC<TBookmarkItemProps> = ({ id }) => {
   const { bookmarks, checkedBookmarks, handleOnSelect } = useChromeBookmark();
+  const { openCreationDialog } = useBookmarkDialogProvider();
 
   const bookmark = bookmarks[id];
   const isSelected = checkedBookmarks.has(id);
@@ -76,7 +78,16 @@ const BookmarkItem: React.FC<TBookmarkItemProps> = ({ id }) => {
         </tr>
       </ContextMenuTrigger>
       <ContextMenuContent className="w-64">
-        <ContextMenuItem inset>Edit</ContextMenuItem>
+        <ContextMenuItem
+          inset
+          onClick={() =>
+            bookmark.type === "separator" || bookmark.type === null
+              ? null
+              : openCreationDialog(id, bookmark.type)
+          }
+        >
+          Edit
+        </ContextMenuItem>
         <ContextMenuItem inset>Delete</ContextMenuItem>
         <ContextMenuSeparator />
         <ContextMenuItem inset>Cut</ContextMenuItem>

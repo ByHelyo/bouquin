@@ -12,15 +12,15 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { createContext } from "react";
 import { toast } from "sonner";
 
+type TBookmarkDialogContext = {
+  isOpen: boolean;
+  openCreationDialog: (id: number | null, tab: "bookmark" | "folder") => void;
+};
+
 export const BookmarkDialogContext = createContext<TBookmarkDialogContext>({
   isOpen: false,
   openCreationDialog: () => {},
 });
-
-type TBookmarkDialogContext = {
-  isOpen: boolean;
-  openCreationDialog: (tab: "bookmark" | "folder") => void;
-};
 
 type TBookmarkDialogProviderProps = {
   children: React.ReactNode;
@@ -29,28 +29,52 @@ type TBookmarkDialogProviderProps = {
 export const BookmarkDialogProvider: React.FC<TBookmarkDialogProviderProps> = ({
   children,
 }) => {
-  const { createBookmark } = useChromeBookmark();
+  const { bookmarks, createBookmark, editBookmark } = useChromeBookmark();
   const [isOpen, setIsOpen] = useState(false);
+  const [id, setId] = useState<number | null>(null);
   const [tab, setTab] = useState<"bookmark" | "folder">("bookmark");
   const [name, setName] = useState("");
   const [url, setUrl] = useState("");
 
-  const openCreationDialog = (tab: "bookmark" | "folder") => {
+  const nodeId = id !== null ? bookmarks[id].nodeId : null;
+
+  const openCreationDialog = (
+    id: number | null,
+    tab: "bookmark" | "folder",
+  ) => {
+    if (id !== null) {
+      setName(bookmarks[id].title);
+      setUrl(bookmarks[id].url ?? "");
+    }
     setTab(tab);
+    setId(id);
     setIsOpen(true);
   };
 
   const handleSave = () => {
-    createBookmark({ name, url, type: tab })
-      .then(() => {
-        setUrl("");
-        setName("");
-        setIsOpen(false);
-        toast.success("Bookmark created");
-      })
-      .catch((error) => {
-        toast.error(error);
-      });
+    if (nodeId !== null) {
+      editBookmark({ nodeId, name, url })
+        .then(() => {
+          setUrl("");
+          setName("");
+          setIsOpen(false);
+          toast.success("Bookmark updated");
+        })
+        .catch((error) => {
+          toast.error(error);
+        });
+    } else {
+      createBookmark({ name, url })
+        .then(() => {
+          setUrl("");
+          setName("");
+          setIsOpen(false);
+          toast.success("Bookmark created");
+        })
+        .catch((error) => {
+          toast.error(error);
+        });
+    }
   };
 
   return (
@@ -59,7 +83,10 @@ export const BookmarkDialogProvider: React.FC<TBookmarkDialogProviderProps> = ({
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>New</DialogTitle>
+            <DialogTitle>
+              {nodeId ? "Edit" : "Create"}{" "}
+              {tab === "bookmark" ? "Bookmark" : "Folder"}
+            </DialogTitle>
           </DialogHeader>
           <div className="flex h-48 flex-col justify-between">
             <Tabs
@@ -68,8 +95,12 @@ export const BookmarkDialogProvider: React.FC<TBookmarkDialogProviderProps> = ({
               onValueChange={(value) => setTab(value as "bookmark" | "folder")}
             >
               <TabsList className="mb-4">
-                <TabsTrigger value="bookmark">Bookmark</TabsTrigger>
-                <TabsTrigger value="folder">Folder</TabsTrigger>
+                <TabsTrigger value="bookmark" disabled={nodeId !== null}>
+                  Bookmark
+                </TabsTrigger>
+                <TabsTrigger value="folder" disabled={nodeId !== null}>
+                  Folder
+                </TabsTrigger>
               </TabsList>
               <TabsContent value="bookmark">
                 <BookmarkCreateElement

@@ -6,7 +6,7 @@ const BookmarkNew: React.FC = () => {
   const { openCreationDialog } = useBookmarkDialogProvider();
 
   const onClick = () => {
-    openCreationDialog("bookmark");
+    openCreationDialog(null, "bookmark");
   };
 
   return (

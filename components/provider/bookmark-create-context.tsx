@@ -20,10 +20,16 @@ export const BookmarkCreateContext: React.FC<
     <ContextMenu>
       <ContextMenuTrigger asChild>{children}</ContextMenuTrigger>
       <ContextMenuContent className="w-64">
-        <ContextMenuItem inset onClick={() => openCreationDialog("bookmark")}>
+        <ContextMenuItem
+          inset
+          onClick={() => openCreationDialog(null, "bookmark")}
+        >
           New bookmark
         </ContextMenuItem>
-        <ContextMenuItem inset onClick={() => openCreationDialog("folder")}>
+        <ContextMenuItem
+          inset
+          onClick={() => openCreationDialog(null, "folder")}
+        >
           New folder
         </ContextMenuItem>
       </ContextMenuContent>

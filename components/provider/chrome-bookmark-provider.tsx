@@ -3,7 +3,10 @@ import {
   buildBookmarkTree,
   convertToTBookmark,
 } from "@/lib/bookmark/treenode.ts";
-import { chromeCreateBookmark } from "@/lib/chrome-bookmark";
+import {
+  chromeCreateBookmark,
+  chromeUpdateBookmark,
+} from "@/lib/chrome-bookmark";
 import { TBookmark } from "@/types/bookmark";
 import React, { createContext, useState, useEffect, useRef } from "react";
 import { browser } from "wxt/browser";
@@ -11,7 +14,12 @@ import { browser } from "wxt/browser";
 export type TCreateBookmarkDetails = {
   name: string;
   url: string | null;
-  type: "bookmark" | "folder";
+};
+
+export type TEditBookmarkDetails = {
+  name: string;
+  url: string | null;
+  nodeId: string;
 };
 
 export const ChromeBookmarkContext = createContext<{
@@ -31,6 +39,7 @@ export const ChromeBookmarkContext = createContext<{
   goForward: () => void;
   goBackward: () => void;
   createBookmark: (details: TCreateBookmarkDetails) => Promise<void>;
+  editBookmark: (details: TEditBookmarkDetails) => Promise<void>;
 } | null>(null);
 
 type ChromeBookmarkProviderProps = {
@@ -175,6 +184,32 @@ export const ChromeBookmarkProvider: React.FC<ChromeBookmarkProviderProps> = ({
     });
   };
 
+  const editBookmark = async (details: TEditBookmarkDetails): Promise<void> => {
+    if (currentDirectoryId === 0)
+      return Promise.reject("Can't modify the root bookmark folders");
+
+    chromeUpdateBookmark(
+      details.nodeId,
+      details.name,
+      details.url || undefined,
+    ).then((bookmarkTreeNode) => {
+      const newBookmark = convertToTBookmark(
+        bookmarkTreeNode,
+        bookmarks.length,
+      );
+      const newBookmarksList = bookmarks.map((b) => {
+        if (b.nodeId === details.nodeId) {
+          return {
+            ...b,
+            childrenIds: [...b.childrenIds],
+          };
+        }
+        return b;
+      });
+      setBookmarks(newBookmarksList);
+    });
+  };
+
   return (
     <ChromeBookmarkContext.Provider
       value={{
@@ -194,6 +229,7 @@ export const ChromeBookmarkProvider: React.FC<ChromeBookmarkProviderProps> = ({
         goBackward,
         isBackwardEmpty,
         createBookmark,
+        editBookmark,
       }}
     >
       {children}
