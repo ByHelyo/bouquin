@@ -15,30 +15,22 @@ const BookmarkCreateElement: React.FC<TBookmarkCreateElementProps> = ({
   url,
   setUrl,
 }) => {
-  if (type === "bookmark") {
-    return (
-      <div className="flex flex-col gap-y-8">
+  return (
+    <div className="flex flex-col gap-y-8">
+      <InputWithOverlappingLabel
+        label="Name"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+      />
+      {type === "bookmark" && (
         <InputWithOverlappingLabel
-          label="Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
+          label="URL"
+          value={url}
+          onChange={(e) => setUrl(e.target.value)}
         />
-        {type === "bookmark" && (
-          <InputWithOverlappingLabel
-            label="URL"
-            value={url}
-            onChange={(e) => setUrl(e.target.value)}
-          />
-        )}
-      </div>
-    );
-  }
-
-  if (type === "folder") {
-    return <InputWithOverlappingLabel label="Name" />;
-  }
-
-  return null;
+      )}
+    </div>
+  );
 };
 
 export default BookmarkCreateElement;
