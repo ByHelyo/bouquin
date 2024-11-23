@@ -1,4 +1,4 @@
-import useBookmarkDialogProvider from "../hook/use-bookmark-dialog";
+import useBookmarkDialogProvider from "../hook/use-bookmark-update-dialog";
 import { Button } from "@/components/ui/button.tsx";
 import React from "react";
 

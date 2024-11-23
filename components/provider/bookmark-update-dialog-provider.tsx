@@ -1,5 +1,6 @@
 import BookmarkCreateElement from "../bookmark/bookmark-create-element";
-import useChromeBookmark from "../hook/use-chrome-bookmark";
+import BookmarkUpdateDialogContext from "../context/bookmark-update-dialog-context";
+import useChromeBookmark from "../hook/use-bookmark";
 import { Button } from "../ui/button";
 import {
   Dialog,
@@ -9,26 +10,15 @@ import {
   DialogTitle,
 } from "../ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
-import { createContext } from "react";
 import { toast } from "sonner";
 
-type TBookmarkDialogContext = {
-  isOpen: boolean;
-  openCreationDialog: (id: number | null, tab: "bookmark" | "folder") => void;
-};
-
-export const BookmarkDialogContext = createContext<TBookmarkDialogContext>({
-  isOpen: false,
-  openCreationDialog: () => {},
-});
-
-type TBookmarkDialogProviderProps = {
+type TBookmarkUpdateDialogProviderProps = {
   children: React.ReactNode;
 };
 
-export const BookmarkDialogProvider: React.FC<TBookmarkDialogProviderProps> = ({
-  children,
-}) => {
+const BookmarkUpdateDialogProvider: React.FC<
+  TBookmarkUpdateDialogProviderProps
+> = ({ children }) => {
   const { bookmarks, createBookmark, editBookmark } = useChromeBookmark();
   const [isOpen, setIsOpen] = useState(false);
   const [id, setId] = useState<number | null>(null);
@@ -78,7 +68,9 @@ export const BookmarkDialogProvider: React.FC<TBookmarkDialogProviderProps> = ({
   };
 
   return (
-    <BookmarkDialogContext.Provider value={{ isOpen, openCreationDialog }}>
+    <BookmarkUpdateDialogContext.Provider
+      value={{ isOpen, openCreationDialog }}
+    >
       {children}
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent>
@@ -137,6 +129,8 @@ export const BookmarkDialogProvider: React.FC<TBookmarkDialogProviderProps> = ({
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </BookmarkDialogContext.Provider>
+    </BookmarkUpdateDialogContext.Provider>
   );
 };
+
+export default BookmarkUpdateDialogProvider;

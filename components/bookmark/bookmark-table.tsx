@@ -1,5 +1,5 @@
+import useBookmark from "../hook/use-bookmark.tsx";
 import BookmarkItem from "./bookmark-item.tsx";
-import useChromeBookmark from "@/components/hook/use-chrome-bookmark.tsx";
 import React from "react";
 
 const headers: { name: string; width: number; align: "left" | "right" }[] = [
@@ -26,7 +26,7 @@ const headers: { name: string; width: number; align: "left" | "right" }[] = [
 ];
 
 const BookmarkTable: React.FC = () => {
-  const { bookmarks, currentDirectoryId } = useChromeBookmark();
+  const { bookmarks, currentDirectoryId } = useBookmark();
 
   if (bookmarks.length === 0) return null;
 

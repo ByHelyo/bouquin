@@ -1,10 +1,10 @@
+import useBookmark from "../hook/use-bookmark";
 import {
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbList,
   BreadcrumbSeparator,
 } from "../ui/breadcrumb";
-import useChromeBookmark from "@/components/hook/use-chrome-bookmark.tsx";
 import { Button } from "@/components/ui/button.tsx";
 import { ArrowLeft, ArrowRight, ArrowUp, Layers3 } from "lucide-react";
 import React from "react";
@@ -20,7 +20,7 @@ const BookmarkToolbar: React.FC = () => {
     goBackward,
     isBackwardEmpty,
     isRoot,
-  } = useChromeBookmark();
+  } = useBookmark();
 
   return (
     <div className="mb-4 flex items-center gap-x-4">

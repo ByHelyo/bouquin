@@ -1,5 +1,5 @@
-import useBookmarkDialogProvider from "../hook/use-bookmark-dialog";
-import useChromeBookmark from "@/components/hook/use-chrome-bookmark.tsx";
+import useBookmark from "../hook/use-bookmark";
+import useBookmarkDialogProvider from "../hook/use-bookmark-update-dialog";
 import {
   ContextMenu,
   ContextMenuContent,
@@ -16,7 +16,7 @@ type TBookmarkItemProps = {
 };
 
 const BookmarkItem: React.FC<TBookmarkItemProps> = ({ id }) => {
-  const { bookmarks, checkedBookmarks, handleOnSelect } = useChromeBookmark();
+  const { bookmarks, checkedBookmarks, handleOnSelect } = useBookmark();
   const { openCreationDialog } = useBookmarkDialogProvider();
 
   const bookmark = bookmarks[id];

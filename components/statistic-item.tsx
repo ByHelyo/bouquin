@@ -1,9 +1,9 @@
-interface StatisticItemProps {
+type TStatisticItemProps = {
   label: string;
   value: string;
-}
+};
 
-const StatisticItem: React.FC<StatisticItemProps> = ({ label, value }) => {
+const StatisticItem: React.FC<TStatisticItemProps> = ({ label, value }) => {
   return (
     <div className="flex flex-col border border-border p-3 shadow-sm">
       <span className="text-sm text-muted-foreground">{label}</span>

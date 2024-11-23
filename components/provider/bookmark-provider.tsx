@@ -1,3 +1,4 @@
+import BookmarkContext from "../context/bookmark-context";
 import { findPathBookmarkNode } from "@/lib/bookmark/find";
 import {
   buildBookmarkTree,
@@ -8,7 +9,7 @@ import {
   chromeUpdateBookmark,
 } from "@/lib/chrome-bookmark";
 import { TBookmark } from "@/types/bookmark";
-import React, { createContext, useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { browser } from "wxt/browser";
 
 export type TCreateBookmarkDetails = {
@@ -22,33 +23,11 @@ export type TEditBookmarkDetails = {
   nodeId: string;
 };
 
-export const ChromeBookmarkContext = createContext<{
-  bookmarks: TBookmark[];
-  currentDirectoryId: number;
-  checkedBookmarks: Set<number>;
-  path: number[];
-  total: number;
-  bookmarkCount: number;
-  folderCount: number;
-  isRoot: () => boolean;
-  isBackwardEmpty: () => boolean;
-  isForwardEmpty: () => boolean;
-  handleOnSelect: (value: number[]) => void;
-  goToRoot: () => void;
-  goToParent: () => void;
-  goForward: () => void;
-  goBackward: () => void;
-  createBookmark: (details: TCreateBookmarkDetails) => Promise<void>;
-  editBookmark: (details: TEditBookmarkDetails) => Promise<void>;
-} | null>(null);
-
-type ChromeBookmarkProviderProps = {
+type TBookmarkProviderProps = {
   children: React.ReactNode;
 };
 
-export const ChromeBookmarkProvider: React.FC<ChromeBookmarkProviderProps> = ({
-  children,
-}) => {
+const BookmarkProvider: React.FC<TBookmarkProviderProps> = ({ children }) => {
   const [bookmarks, setBookmarks] = useState<TBookmark[]>([]);
   const [checkedBookmarks, setCheckedBookmarks] = useState<Set<number>>(
     new Set(),
@@ -205,7 +184,7 @@ export const ChromeBookmarkProvider: React.FC<ChromeBookmarkProviderProps> = ({
   };
 
   return (
-    <ChromeBookmarkContext.Provider
+    <BookmarkContext.Provider
       value={{
         bookmarks,
         checkedBookmarks,
@@ -227,6 +206,8 @@ export const ChromeBookmarkProvider: React.FC<ChromeBookmarkProviderProps> = ({
       }}
     >
       {children}
-    </ChromeBookmarkContext.Provider>
+    </BookmarkContext.Provider>
   );
 };
+
+export default BookmarkProvider;

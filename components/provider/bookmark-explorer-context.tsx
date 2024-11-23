@@ -1,4 +1,4 @@
-import useBookmarkDialogProvider from "../hook/use-bookmark-dialog";
+import useBookmarkDialogProvider from "../hook/use-bookmark-update-dialog";
 import {
   ContextMenu,
   ContextMenuContent,
@@ -11,9 +11,9 @@ type TBookmarkExplorerProviderProps = {
   children: React.ReactNode;
 };
 
-export const BookmarkCreateContext: React.FC<
-  TBookmarkExplorerProviderProps
-> = ({ children }) => {
+const BookmarkExplorerContext: React.FC<TBookmarkExplorerProviderProps> = ({
+  children,
+}) => {
   const { openCreationDialog } = useBookmarkDialogProvider();
 
   return (
@@ -36,3 +36,5 @@ export const BookmarkCreateContext: React.FC<
     </ContextMenu>
   );
 };
+
+export default BookmarkExplorerContext;
