@@ -39,7 +39,7 @@ const BookmarkProvider: React.FC<TBookmarkProviderProps> = ({ children }) => {
   const bookmarkCountRef = useRef<number>(0);
   const folderCountRef = useRef<number>(0);
 
-  const currentDirectoryId =
+  const currentFolderId =
     pathRef.current.length == 0
       ? -1
       : pathRef.current[pathRef.current.length - 1];
@@ -63,7 +63,7 @@ const BookmarkProvider: React.FC<TBookmarkProviderProps> = ({ children }) => {
   }, []);
 
   const isRoot = (): boolean => {
-    return currentDirectoryId === 0;
+    return currentFolderId === 0;
   };
 
   const isForwardEmpty = (): boolean => {
@@ -85,7 +85,7 @@ const BookmarkProvider: React.FC<TBookmarkProviderProps> = ({ children }) => {
       switch (selectedElement.type) {
         case "folder":
           pathRef.current = [...pathRef.current, selectedElement.id];
-          backHistoryRef.current.push(currentDirectoryId);
+          backHistoryRef.current.push(currentFolderId);
           forwardHistoryRef.current = [];
           setCheckedBookmarks(new Set());
           break;
@@ -99,7 +99,7 @@ const BookmarkProvider: React.FC<TBookmarkProviderProps> = ({ children }) => {
   };
 
   const goToRoot = () => {
-    backHistoryRef.current.push(currentDirectoryId);
+    backHistoryRef.current.push(currentFolderId);
     forwardHistoryRef.current = [];
     pathRef.current = [0];
     setCheckedBookmarks(new Set());
@@ -110,7 +110,7 @@ const BookmarkProvider: React.FC<TBookmarkProviderProps> = ({ children }) => {
 
     if (!element) return;
 
-    backHistoryRef.current.push(currentDirectoryId);
+    backHistoryRef.current.push(currentFolderId);
     forwardHistoryRef.current = [];
     setCheckedBookmarks(new Set());
   };
@@ -120,7 +120,7 @@ const BookmarkProvider: React.FC<TBookmarkProviderProps> = ({ children }) => {
 
     if (element === undefined) return;
 
-    forwardHistoryRef.current.push(currentDirectoryId);
+    forwardHistoryRef.current.push(currentFolderId);
     pathRef.current = findPathBookmarkNode(bookmarks, 0, element)!;
     setCheckedBookmarks(new Set());
   };
@@ -130,7 +130,7 @@ const BookmarkProvider: React.FC<TBookmarkProviderProps> = ({ children }) => {
 
     if (element === undefined) return;
 
-    backHistoryRef.current.push(currentDirectoryId);
+    backHistoryRef.current.push(currentFolderId);
     pathRef.current = findPathBookmarkNode(bookmarks, 0, element)!;
     setCheckedBookmarks(new Set());
   };
@@ -139,7 +139,7 @@ const BookmarkProvider: React.FC<TBookmarkProviderProps> = ({ children }) => {
     details: TCreateBookmarkDetails,
   ): Promise<void> => {
     return chromeCreateBookmark(
-      bookmarks[currentDirectoryId].nodeId,
+      bookmarks[currentFolderId].nodeId,
       details.name,
       details.url || undefined,
     ).then((bookmarkTreeNode) => {
@@ -191,7 +191,7 @@ const BookmarkProvider: React.FC<TBookmarkProviderProps> = ({ children }) => {
         total: totalRef.current,
         bookmarkCount: bookmarkCountRef.current,
         folderCount: folderCountRef.current,
-        currentDirectoryId,
+        currentFolderId: currentFolderId,
         goToParent,
         goToRoot,
         isRoot,

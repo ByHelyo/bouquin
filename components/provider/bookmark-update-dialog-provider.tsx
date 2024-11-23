@@ -1,6 +1,6 @@
 import BookmarkCreateElement from "../bookmark/bookmark-create-element";
 import BookmarkUpdateDialogContext from "../context/bookmark-update-dialog-context";
-import useChromeBookmark from "../hook/use-bookmark";
+import useBookmark from "../hook/use-bookmark";
 import { Button } from "../ui/button";
 import {
   Dialog,
@@ -19,7 +19,7 @@ type TBookmarkUpdateDialogProviderProps = {
 const BookmarkUpdateDialogProvider: React.FC<
   TBookmarkUpdateDialogProviderProps
 > = ({ children }) => {
-  const { bookmarks, createBookmark, editBookmark } = useChromeBookmark();
+  const { bookmarks, createBookmark, editBookmark } = useBookmark();
   const [isOpen, setIsOpen] = useState(false);
   const [id, setId] = useState<number | null>(null);
   const [tab, setTab] = useState<"bookmark" | "folder">("bookmark");

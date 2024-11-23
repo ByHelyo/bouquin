@@ -7,7 +7,7 @@ import { createContext } from "react";
 
 type TBookmarkContext = {
   bookmarks: TBookmark[];
-  currentDirectoryId: number;
+  currentFolderId: number;
   checkedBookmarks: Set<number>;
   path: number[];
   total: number;

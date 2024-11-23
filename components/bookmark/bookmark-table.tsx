@@ -26,7 +26,7 @@ const headers: { name: string; width: number; align: "left" | "right" }[] = [
 ];
 
 const BookmarkTable: React.FC = () => {
-  const { bookmarks, currentDirectoryId } = useBookmark();
+  const { bookmarks, currentFolderId: currentFolderId } = useBookmark();
 
   if (bookmarks.length === 0) return null;
 
@@ -47,7 +47,7 @@ const BookmarkTable: React.FC = () => {
         </tr>
       </thead>
       <tbody>
-        {bookmarks[currentDirectoryId].childrenIds.map((childId) => (
+        {bookmarks[currentFolderId].childrenIds.map((childId) => (
           <BookmarkItem key={childId} id={childId} />
         ))}
       </tbody>
