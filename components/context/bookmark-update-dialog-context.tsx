@@ -5,11 +5,7 @@ type TBookmarkUpdateDialogContext = {
   openCreationDialog: (id: number | null, tab: "bookmark" | "folder") => void;
 };
 
-const BookmarkUpdateDialogContext = createContext<TBookmarkUpdateDialogContext>(
-  {
-    isOpen: false,
-    openCreationDialog: () => {},
-  },
-);
+const BookmarkUpdateDialogContext =
+  createContext<TBookmarkUpdateDialogContext | null>(null);
 
 export default BookmarkUpdateDialogContext;

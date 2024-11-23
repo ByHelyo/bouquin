@@ -25,6 +25,6 @@ type TBookmarkContext = {
   editBookmark: (details: TEditBookmarkDetails) => Promise<void>;
 };
 
-const BookmarkContext = createContext<TBookmarkContext>({} as TBookmarkContext);
+const BookmarkContext = createContext<TBookmarkContext | null>(null);
 
 export default BookmarkContext;

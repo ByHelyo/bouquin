@@ -9,8 +9,8 @@ import {
   chromeUpdateBookmark,
 } from "@/lib/chrome-bookmark";
 import { TBookmark } from "@/types/bookmark";
-import React, { useState, useEffect, useRef } from "react";
-import { browser } from "wxt/browser";
+import React, { useState, useEffect, useRef, useReducer, Reducer } from "react";
+import { Bookmarks, browser } from "wxt/browser";
 
 export type TCreateBookmarkDetails = {
   name: string;
@@ -28,7 +28,9 @@ type TBookmarkProviderProps = {
 };
 
 const BookmarkProvider: React.FC<TBookmarkProviderProps> = ({ children }) => {
-  const [bookmarks, setBookmarks] = useState<TBookmark[]>([]);
+  const [bookmarks, dispatch] = useReducer<
+    Reducer<TBookmark[], TBookmarkAction>
+  >(bookmarkReducer, []);
   const [checkedBookmarks, setCheckedBookmarks] = useState<Set<number>>(
     new Set(),
   );
@@ -53,7 +55,7 @@ const BookmarkProvider: React.FC<TBookmarkProviderProps> = ({ children }) => {
           newestBookmarks,
           [0],
         );
-        setBookmarks(newestBookmarks);
+        dispatch({ type: "initialization", bookmarks: newestBookmarks });
         pathRef.current = [0];
         totalRef.current = total;
         bookmarkCountRef.current = bookmarkCount;
@@ -143,20 +145,7 @@ const BookmarkProvider: React.FC<TBookmarkProviderProps> = ({ children }) => {
       details.name,
       details.url || undefined,
     ).then((bookmarkTreeNode) => {
-      const newBookmark = convertToTBookmark(
-        bookmarkTreeNode,
-        bookmarks.length,
-      );
-      const newBookmarksList = bookmarks.map((b) => {
-        if (b.nodeId === newBookmark.parentId) {
-          return {
-            ...b,
-            childrenIds: [...b.childrenIds, newBookmark.id],
-          };
-        }
-        return b;
-      });
-      setBookmarks([...newBookmarksList, newBookmark]);
+      dispatch({ type: "creation", bookmark: bookmarkTreeNode });
     });
   };
 
@@ -166,18 +155,7 @@ const BookmarkProvider: React.FC<TBookmarkProviderProps> = ({ children }) => {
       details.name,
       details.url || undefined,
     ).then((bookmarkTreeNode) => {
-      const newBookmarksList = bookmarks.map((b) => {
-        if (b.nodeId === details.nodeId) {
-          const newBookmark = convertToTBookmark(bookmarkTreeNode, b.id);
-
-          return {
-            ...newBookmark,
-            childrenIds: [...b.childrenIds],
-          };
-        }
-        return b;
-      });
-      setBookmarks(newBookmarksList);
+      dispatch({ type: "edition", bookmark: bookmarkTreeNode });
     });
   };
 
@@ -206,6 +184,51 @@ const BookmarkProvider: React.FC<TBookmarkProviderProps> = ({ children }) => {
       {children}
     </BookmarkContext.Provider>
   );
+};
+
+type TBookmarkAction =
+  | { type: "initialization"; bookmarks: TBookmark[] }
+  | { type: "creation"; bookmark: Bookmarks.BookmarkTreeNode }
+  | { type: "deletion"; nodeId: string }
+  | { type: "edition"; bookmark: Bookmarks.BookmarkTreeNode };
+
+const bookmarkReducer = (bookmarks: TBookmark[], action: TBookmarkAction) => {
+  let newBookmarksList: TBookmark[] = [];
+
+  switch (action.type) {
+    case "initialization":
+      newBookmarksList = action.bookmarks;
+      break;
+    case "creation":
+      const newBookmark = convertToTBookmark(action.bookmark, bookmarks.length);
+
+      newBookmarksList = bookmarks.map((b) => {
+        if (b.nodeId === newBookmark.parentId) {
+          return {
+            ...b,
+            childrenIds: [...b.childrenIds, newBookmark.id],
+          };
+        }
+        return b;
+      });
+      newBookmarksList = [...newBookmarksList, newBookmark];
+      break;
+    case "edition":
+      newBookmarksList = bookmarks.map((b) => {
+        if (b.nodeId === action.bookmark.id) {
+          const newBookmark = convertToTBookmark(action.bookmark, b.id);
+
+          return {
+            ...newBookmark,
+            childrenIds: [...b.childrenIds],
+          };
+        }
+        return b;
+      });
+      break;
+  }
+
+  return newBookmarksList;
 };
 
 export default BookmarkProvider;
