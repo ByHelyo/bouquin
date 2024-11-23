@@ -159,10 +159,7 @@ export const ChromeBookmarkProvider: React.FC<ChromeBookmarkProviderProps> = ({
   const createBookmark = async (
     details: TCreateBookmarkDetails,
   ): Promise<void> => {
-    if (currentDirectoryId === 0)
-      return Promise.reject("Can't modify the root bookmark folders");
-
-    chromeCreateBookmark(
+    return chromeCreateBookmark(
       bookmarks[currentDirectoryId].nodeId,
       details.name,
       details.url || undefined,
@@ -185,10 +182,7 @@ export const ChromeBookmarkProvider: React.FC<ChromeBookmarkProviderProps> = ({
   };
 
   const editBookmark = async (details: TEditBookmarkDetails): Promise<void> => {
-    if (currentDirectoryId === 0)
-      return Promise.reject("Can't modify the root bookmark folders");
-
-    chromeUpdateBookmark(
+    return chromeUpdateBookmark(
       details.nodeId,
       details.name,
       details.url || undefined,

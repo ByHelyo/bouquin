@@ -72,7 +72,7 @@ export const BookmarkDialogProvider: React.FC<TBookmarkDialogProviderProps> = ({
           toast.success("Bookmark created");
         })
         .catch((error) => {
-          toast.error(error);
+          toast.error(error.message);
         });
     }
   };
