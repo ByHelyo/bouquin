@@ -166,14 +166,12 @@ const BookmarkProvider: React.FC<TBookmarkProviderProps> = ({ children }) => {
       details.name,
       details.url || undefined,
     ).then((bookmarkTreeNode) => {
-      const newBookmark = convertToTBookmark(
-        bookmarkTreeNode,
-        bookmarks.length,
-      );
       const newBookmarksList = bookmarks.map((b) => {
         if (b.nodeId === details.nodeId) {
+          const newBookmark = convertToTBookmark(bookmarkTreeNode, b.id);
+
           return {
-            ...b,
+            ...newBookmark,
             childrenIds: [...b.childrenIds],
           };
         }

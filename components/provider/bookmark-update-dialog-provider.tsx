@@ -51,7 +51,7 @@ const BookmarkUpdateDialogProvider: React.FC<
           toast.success("Bookmark updated");
         })
         .catch((error) => {
-          toast.error(error);
+          toast.error(error.message);
         });
     } else {
       createBookmark({ name, url })
