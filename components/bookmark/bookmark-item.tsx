@@ -16,7 +16,8 @@ type TBookmarkItemProps = {
 };
 
 const BookmarkItem: React.FC<TBookmarkItemProps> = ({ id }) => {
-  const { bookmarks, checkedBookmarks, handleOnSelect } = useBookmark();
+  const { bookmarks, checkedBookmarks, handleOnSelect, deleteBookmark } =
+    useBookmark();
   const { openCreationDialog } = useBookmarkDialogProvider();
 
   const bookmark = bookmarks[id];
@@ -88,7 +89,12 @@ const BookmarkItem: React.FC<TBookmarkItemProps> = ({ id }) => {
         >
           Edit
         </ContextMenuItem>
-        <ContextMenuItem inset>Delete</ContextMenuItem>
+        <ContextMenuItem
+          inset
+          onClick={() => deleteBookmark(bookmark.nodeId, bookmark.id)}
+        >
+          Delete
+        </ContextMenuItem>
         <ContextMenuSeparator />
         <ContextMenuItem inset>Cut</ContextMenuItem>
         <ContextMenuItem inset>Copy</ContextMenuItem>

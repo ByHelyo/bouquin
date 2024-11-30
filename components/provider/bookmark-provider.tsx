@@ -1,13 +1,12 @@
 import BookmarkContext from "../context/bookmark-context";
 import { findPathBookmarkNode } from "@/lib/bookmark/find";
+import { convertToTBookmark } from "@/lib/bookmark/treenode.ts";
 import {
-  buildBookmarkTree,
-  convertToTBookmark,
-} from "@/lib/bookmark/treenode.ts";
-import {
-  chromeCreateBookmark,
-  chromeUpdateBookmark,
-} from "@/lib/chrome-bookmark";
+  browserCreateBookmark,
+  browserDeleteBookmark,
+  browserGetTree,
+  browserUpdateBookmark,
+} from "@/lib/browser.ts";
 import { TBookmark } from "@/types/bookmark";
 import React, { useState, useEffect, useRef, useReducer, Reducer } from "react";
 import { Bookmarks, browser } from "wxt/browser";
@@ -47,20 +46,12 @@ const BookmarkProvider: React.FC<TBookmarkProviderProps> = ({ children }) => {
       : pathRef.current[pathRef.current.length - 1];
 
   useEffect(() => {
-    browser.bookmarks.getTree().then((tree) => {
-      if (tree.length == 1) {
-        const newestBookmarks: TBookmark[] = [];
-        const { total, bookmarkCount, folderCount } = buildBookmarkTree(
-          tree[0],
-          newestBookmarks,
-          [0],
-        );
-        dispatch({ type: "initialization", bookmarks: newestBookmarks });
-        pathRef.current = [0];
-        totalRef.current = total;
-        bookmarkCountRef.current = bookmarkCount;
-        folderCountRef.current = folderCount;
-      }
+    browserGetTree().then((details) => {
+      dispatch({ type: "initialization", bookmarks: details.newestBookmarks });
+      pathRef.current = [0];
+      totalRef.current = details.total;
+      bookmarkCountRef.current = details.bookmarkCount;
+      folderCountRef.current = details.folderCount;
     });
   }, []);
 
@@ -140,7 +131,7 @@ const BookmarkProvider: React.FC<TBookmarkProviderProps> = ({ children }) => {
   const createBookmark = async (
     details: TCreateBookmarkDetails,
   ): Promise<void> => {
-    return chromeCreateBookmark(
+    return browserCreateBookmark(
       bookmarks[currentFolderId].nodeId,
       details.name,
       details.url || undefined,
@@ -150,12 +141,22 @@ const BookmarkProvider: React.FC<TBookmarkProviderProps> = ({ children }) => {
   };
 
   const editBookmark = async (details: TEditBookmarkDetails): Promise<void> => {
-    return chromeUpdateBookmark(
+    return browserUpdateBookmark(
       details.nodeId,
       details.name,
       details.url || undefined,
     ).then((bookmarkTreeNode) => {
       dispatch({ type: "edition", bookmark: bookmarkTreeNode });
+    });
+  };
+
+  const deleteBookmark = async (nodeId: string, id: number) => {
+    return browserDeleteBookmark(nodeId).then(() => {
+      dispatch({ type: "deletion", id });
+      pathRef.current = findPathBookmarkNode(bookmarks, 0, currentFolderId)!;
+      backHistoryRef.current = [];
+      forwardHistoryRef.current = [];
+      setCheckedBookmarks(new Set());
     });
   };
 
@@ -179,6 +180,7 @@ const BookmarkProvider: React.FC<TBookmarkProviderProps> = ({ children }) => {
         isBackwardEmpty,
         createBookmark,
         editBookmark,
+        deleteBookmark,
       }}
     >
       {children}
@@ -189,7 +191,7 @@ const BookmarkProvider: React.FC<TBookmarkProviderProps> = ({ children }) => {
 type TBookmarkAction =
   | { type: "initialization"; bookmarks: TBookmark[] }
   | { type: "creation"; bookmark: Bookmarks.BookmarkTreeNode }
-  | { type: "deletion"; nodeId: string }
+  | { type: "deletion"; id: number }
   | { type: "edition"; bookmark: Bookmarks.BookmarkTreeNode };
 
 const bookmarkReducer = (bookmarks: TBookmark[], action: TBookmarkAction) => {
@@ -224,6 +226,63 @@ const bookmarkReducer = (bookmarks: TBookmark[], action: TBookmarkAction) => {
           };
         }
         return b;
+      });
+      break;
+    case "deletion":
+      let removedIds: number[] = [];
+
+      const findAllIdsSubtree = (id: number) => {
+        removedIds.push(id);
+        if (bookmarks[id].childrenIds.length != 0) {
+          for (const subId of bookmarks[id].childrenIds) {
+            findAllIdsSubtree(subId);
+          }
+        }
+      };
+
+      findAllIdsSubtree(action.id);
+      let oldIds: Map<number, string> = new Map();
+      let newIds: Map<string, number> = new Map();
+
+      for (const bookmark of bookmarks) {
+        oldIds.set(bookmark.id, bookmark.nodeId);
+      }
+
+      newBookmarksList = bookmarks.filter((b) => {
+        return !removedIds.includes(b.id);
+      });
+
+      for (const bookmark of newBookmarksList) {
+        newIds.set(bookmark.nodeId, bookmark.id);
+      }
+
+      for (let i = 0; i < newBookmarksList.length; i++) {
+        newIds.set(newBookmarksList[i].nodeId, i);
+      }
+
+      newBookmarksList = newBookmarksList.map((b, index) => {
+        if (b.childrenIds.length != 0) {
+          const newChildrenIds: number[] = [];
+
+          for (const subId of b.childrenIds) {
+            let oldId = oldIds.get(subId)!;
+            let newId = newIds.get(oldId);
+
+            if (newId != undefined) {
+              newChildrenIds.push(newId);
+            }
+          }
+
+          return {
+            ...b,
+            id: index,
+            childrenIds: newChildrenIds,
+          };
+        }
+        return {
+          ...b,
+          id: index,
+        };
       });
       break;
   }

@@ -23,6 +23,7 @@ type TBookmarkContext = {
   goBackward: () => void;
   createBookmark: (details: TCreateBookmarkDetails) => Promise<void>;
   editBookmark: (details: TEditBookmarkDetails) => Promise<void>;
+  deleteBookmark: (nodeId: string, id: number) => Promise<void>;
 };
 
 const BookmarkContext = createContext<TBookmarkContext | null>(null);
