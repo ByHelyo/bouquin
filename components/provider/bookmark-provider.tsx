@@ -8,19 +8,14 @@ import {
   browserUpdateBookmark,
 } from "@/lib/browser.ts";
 import { TBookmark } from "@/types/bookmark";
+import {
+  TBookmarkAction,
+  TCreateBookmarkDetails,
+  TCreateWindowDetails,
+  TEditBookmarkDetails,
+} from "@/types/bookmark-provider";
 import React, { useState, useEffect, useRef, useReducer, Reducer } from "react";
 import { Bookmarks, browser } from "wxt/browser";
-
-export type TCreateBookmarkDetails = {
-  name: string;
-  url: string | null;
-};
-
-export type TEditBookmarkDetails = {
-  name: string;
-  url: string | null;
-  nodeId: string;
-};
 
 type TBookmarkProviderProps = {
   children: React.ReactNode;
@@ -67,7 +62,7 @@ const BookmarkProvider: React.FC<TBookmarkProviderProps> = ({ children }) => {
     return backHistoryRef.current.length === 0;
   };
 
-  const handleOnSelect = (selectedIds: number[]) => {
+  const handleOnSelect = async (selectedIds: number[]) => {
     if (
       checkedBookmarks.size === 1 &&
       selectedIds.length === 1 &&
@@ -83,7 +78,9 @@ const BookmarkProvider: React.FC<TBookmarkProviderProps> = ({ children }) => {
           setCheckedBookmarks(new Set());
           break;
         case "bookmark":
-          browser.tabs.create({ url: selectedElement.url || undefined });
+          if (selectedElement.url) {
+            await openTab(selectedElement.url);
+          }
           break;
       }
     } else {
@@ -160,6 +157,17 @@ const BookmarkProvider: React.FC<TBookmarkProviderProps> = ({ children }) => {
     });
   };
 
+  const createWindow = async (details: TCreateWindowDetails) => {
+    await browser.windows.create({
+      url: details.url,
+      incognito: details.incognito || false,
+    });
+  };
+
+  const openTab = async (url: string) => {
+    await browser.tabs.create({ url });
+  };
+
   return (
     <BookmarkContext.Provider
       value={{
@@ -181,18 +189,14 @@ const BookmarkProvider: React.FC<TBookmarkProviderProps> = ({ children }) => {
         createBookmark,
         editBookmark,
         deleteBookmark,
+        createWindow,
+        openTab,
       }}
     >
       {children}
     </BookmarkContext.Provider>
   );
 };
-
-type TBookmarkAction =
-  | { type: "initialization"; bookmarks: TBookmark[] }
-  | { type: "creation"; bookmark: Bookmarks.BookmarkTreeNode }
-  | { type: "deletion"; id: number }
-  | { type: "edition"; bookmark: Bookmarks.BookmarkTreeNode };
 
 const bookmarkReducer = (bookmarks: TBookmark[], action: TBookmarkAction) => {
   let newBookmarksList: TBookmark[] = [];

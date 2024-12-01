@@ -64,7 +64,11 @@ export const convertToTBookmark = (
     lastModified: node.dateAdded || null,
     unmodifiable: !!node.unmodifiable,
     type:
-      node.type === "folder" || node.url === undefined ? "folder" : "bookmark",
+      node.type !== undefined
+        ? node.type
+        : node.url !== undefined
+          ? "bookmark"
+          : "folder",
     childrenIds: [],
   };
 };

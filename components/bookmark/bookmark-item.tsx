@@ -16,8 +16,14 @@ type TBookmarkItemProps = {
 };
 
 const BookmarkItem: React.FC<TBookmarkItemProps> = ({ id }) => {
-  const { bookmarks, checkedBookmarks, handleOnSelect, deleteBookmark } =
-    useBookmark();
+  const {
+    bookmarks,
+    checkedBookmarks,
+    handleOnSelect,
+    deleteBookmark,
+    createWindow,
+    openTab
+  } = useBookmark();
   const { openCreationDialog } = useBookmarkDialogProvider();
 
   const bookmark = bookmarks[id];
@@ -29,13 +35,17 @@ const BookmarkItem: React.FC<TBookmarkItemProps> = ({ id }) => {
     return date.toISOString().slice(0, 16).replace("T", " ");
   };
 
-  const handleOnClick = (e: React.MouseEvent<HTMLTableRowElement>) => {
+  const handleOnClick = async (e: React.MouseEvent<HTMLTableRowElement>) => {
     if (e.ctrlKey) {
-      handleOnSelect([...checkedBookmarks, id]);
+      await handleOnSelect([...checkedBookmarks, id]);
     } else {
-      handleOnSelect([id]);
+      await handleOnSelect([id]);
     }
   };
+
+  if (bookmark.type === "separator") {
+    return null;
+  }
 
   return (
     <ContextMenu>
@@ -66,7 +76,7 @@ const BookmarkItem: React.FC<TBookmarkItemProps> = ({ id }) => {
             </span>
           </td>
           <td className="truncate px-2 py-1 text-left text-muted-foreground">
-            {bookmark.url}
+            {bookmark.type === "bookmark" && bookmark.url}
           </td>
           <td className="px-2 py-1 text-left text-muted-foreground">
             {bookmark.lastModified !== null
@@ -81,11 +91,11 @@ const BookmarkItem: React.FC<TBookmarkItemProps> = ({ id }) => {
       <ContextMenuContent className="w-64">
         <ContextMenuItem
           inset
-          onClick={() =>
-            bookmark.type === "separator" || bookmark.type === null
-              ? null
-              : openCreationDialog(id, bookmark.type)
-          }
+          onClick={() => {
+            if (bookmark.type !== "separator") {
+              openCreationDialog(id, bookmark.type);
+            }
+          }}
         >
           Edit
         </ContextMenuItem>
@@ -100,9 +110,38 @@ const BookmarkItem: React.FC<TBookmarkItemProps> = ({ id }) => {
         <ContextMenuItem inset>Copy</ContextMenuItem>
         <ContextMenuItem inset>Paste</ContextMenuItem>
         <ContextMenuSeparator />
-        <ContextMenuItem inset>Open in new tab</ContextMenuItem>
-        <ContextMenuItem inset>Open in new window</ContextMenuItem>
-        <ContextMenuItem inset>Open in incognito window</ContextMenuItem>
+        <ContextMenuItem
+          inset
+          onClick={async () => {
+            if (bookmark.type === "bookmark" && bookmark.url !== null) {
+              await openTab(bookmark.url);
+            }
+          }}
+        >
+          Open in new window
+        </ContextMenuItem>
+        <ContextMenuItem
+          inset
+          onClick={async () => {
+            if (bookmark.type === "bookmark" && bookmark.url !== null) {
+              // Can be removed
+              await createWindow({ url: bookmark.url, incognito: false });
+            }
+          }}
+        >
+          Open in new window
+        </ContextMenuItem>
+        <ContextMenuItem
+          inset
+          onClick={async () => {
+            if (bookmark.type === "bookmark" && bookmark.url) {
+              // Can be removed
+              await createWindow({ url: bookmark.url, incognito: true });
+            }
+          }}
+        >
+          Open in incognito window
+        </ContextMenuItem>
       </ContextMenuContent>
     </ContextMenu>
   );

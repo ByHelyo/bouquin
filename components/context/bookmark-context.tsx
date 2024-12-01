@@ -1,29 +1,32 @@
+import { TBookmark } from "@/types/bookmark";
 import {
   TCreateBookmarkDetails,
+  TCreateWindowDetails,
   TEditBookmarkDetails,
-} from "../provider/bookmark-provider";
-import { TBookmark } from "@/types/bookmark";
+} from "@/types/bookmark-provider";
 import { createContext } from "react";
 
 type TBookmarkContext = {
-  bookmarks: TBookmark[];
-  currentFolderId: number;
-  checkedBookmarks: Set<number>;
-  path: number[];
-  total: number;
   bookmarkCount: number;
+  bookmarks: TBookmark[];
+  checkedBookmarks: Set<number>;
+  createBookmark: (details: TCreateBookmarkDetails) => Promise<void>;
+  createWindow: (details: TCreateWindowDetails) => Promise<void>;
+  currentFolderId: number;
+  deleteBookmark: (nodeId: string, id: number) => Promise<void>;
+  editBookmark: (details: TEditBookmarkDetails) => Promise<void>;
   folderCount: number;
-  isRoot: () => boolean;
+  goBackward: () => void;
+  goForward: () => void;
+  goToParent: () => void;
+  goToRoot: () => void;
+  handleOnSelect: (value: number[]) => Promise<void>;
   isBackwardEmpty: () => boolean;
   isForwardEmpty: () => boolean;
-  handleOnSelect: (value: number[]) => void;
-  goToRoot: () => void;
-  goToParent: () => void;
-  goForward: () => void;
-  goBackward: () => void;
-  createBookmark: (details: TCreateBookmarkDetails) => Promise<void>;
-  editBookmark: (details: TEditBookmarkDetails) => Promise<void>;
-  deleteBookmark: (nodeId: string, id: number) => Promise<void>;
+  isRoot: () => boolean;
+  openTab: (url: string) => Promise<void>;
+  path: number[];
+  total: number;
 };
 
 const BookmarkContext = createContext<TBookmarkContext | null>(null);

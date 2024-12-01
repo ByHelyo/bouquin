@@ -8,6 +8,6 @@ export type TBookmark = {
   dateAdded: number | null;
   lastModified: number | null;
   unmodifiable: boolean;
-  type: "bookmark" | "folder" | "separator" | null;
+  type: "bookmark" | "folder" | "separator";
   childrenIds: number[];
 };
